@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_locate"
+        android:icon="@drawable/ic_location_on_black_24dp"
+        android:title="@string/nav_location" />
+    <item
+        android:id="@+id/nav_schedule"
+        android:icon="@drawable/ic_train_black_24dp"
+        android:title="@string/nav_schedule" />
+</menu>
