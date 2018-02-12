@@ -12,13 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimaryDark"
+        android:id="@+id/searchFormLayout"
         android:paddingBottom="12dp"
         android:paddingLeft="0dp"
         android:paddingRight="0dp"
         android:paddingTop="15dp">
 
         <AutoCompleteTextView
-            android:id="@+id/etFrom"
+            android:id="@+id/from_station"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -26,9 +27,8 @@
             android:background="@drawable/autocomplete_textview"
             android:ems="10"
             android:hint="@string/origin_station"
-            android:inputType="textPersonName"
+            android:inputType="textAutoComplete"
             android:padding="12dp"
-            android:text=""
             android:textColor="@android:color/white"
             android:textSize="20sp"
             android:layout_alignParentTop="true"
@@ -36,51 +36,145 @@
             android:textCursorDrawable="@null"/>
 
         <AutoCompleteTextView
-            android:id="@+id/etTo"
+            android:id="@+id/to_station"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etFrom"
-            android:layout_below="@+id/etFrom"
+            android:layout_alignEnd="@+id/from_station"
+            android:layout_below="@+id/from_station"
             android:layout_marginTop="16dp"
             android:background="@drawable/autocomplete_textview"
             android:ems="10"
             android:hint="@string/destination_station"
-            android:inputType="textPersonName"
+            android:inputType="textAutoComplete"
             android:padding="12dp"
-            android:text=""
             android:textColor="@android:color/white"
             android:textSize="20sp"
-            android:layout_alignStart="@+id/etFrom"
-            android:textCursorDrawable="@null"/>
+            android:layout_alignStart="@+id/from_station"
+            android:textCursorDrawable="@null" />
 
         <Button
-            android:id="@+id/btnFindTrains"
+            android:id="@+id/searchButton"
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/etTo"
-            android:layout_below="@+id/etTo"
+            android:layout_alignEnd="@+id/to_station"
+            android:layout_below="@+id/to_station"
             android:layout_marginTop="16dp"
             android:background="@drawable/search_button"
             android:elevation="0dp"
             android:foreground="?android:attr/selectableItemBackground"
-            android:text="Search"
+            android:text="@string/seach_button_text"
             android:textColor="@android:color/white"
-            android:layout_alignStart="@+id/etTo" />
+            android:layout_alignStart="@+id/to_station" />
 
         <ImageView
+            android:contentDescription="@string/swap_icon_desc"
             android:id="@+id/reverseIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btnFindTrains"
+            android:layout_above="@+id/searchButton"
             android:layout_alignParentEnd="true"
             android:layout_marginBottom="35dp"
             android:background="@drawable/reverse_icon"
             android:padding="8dp"
             android:rotation="90"
-            android:src="@drawable/ic_compare_arrows_24px" />
+            android:clickable="true"
+            android:src="@drawable/arrows"
+           />
 
     </RelativeLayout>
 
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        android:id="@+id/recentSearchesLayout">
+
+        <View
+            android:layout_width="match_parent"
+            android:background="?android:attr/listDivider"
+            android:id="@+id/view"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="8dp"
+            android:layout_height="2dp" />
+
+        <TextView
+            android:text="@string/recent_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recentSearchTv"
+            android:layout_below="@+id/view"
+            android:layout_alignStart="@+id/view"
+            android:textColor="@android:color/darker_gray"
+            android:layout_marginStart="16dp" />
+
+        <TextView
+            android:text="@string/no_recent_searches"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/noRecentSearchTv"
+            android:textSize="20sp"
+            android:textAlignment="center"
+            android:paddingTop="32dp"
+            android:layout_below="@+id/recentSearchTv"
+            android:textColor="@android:color/darker_gray"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recentSearches"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/noRecentSearchTv">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/resultsLayout">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:indeterminate="true"
+            android:layout_marginTop="32dp" />
+
+        <TextView
+            android:text="@string/no_trains"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadingTv"
+            android:textSize="22sp"
+            android:paddingTop="32dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:textAlignment="center" />
+
+        <TextView
+            android:text="@string/error_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/loadingTv2"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp"
+            android:textAlignment="center"
+            android:textColor="@android:color/darker_gray"
+            android:paddingTop="8dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/searchResults"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 
 </LinearLayout>

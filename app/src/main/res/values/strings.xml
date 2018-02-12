@@ -11,4 +11,11 @@
     <string name="saved_journies">Saved journies</string>
     <string name="origin_station">Origin station...</string>
     <string name="destination_station">Destination station...</string>
+    <string name="seach_button_text">Search</string>
+    <string name="recent_search">Recently searched</string>
+    <string name="no_recent_searches">No recent searches.</string>
+    <string name="swap_icon_desc">Swap from and destination stations</string>
+    <string name="no_trains">Unable to find trains.</string>
+    <string name="error_message">This may be because the servers are offline or you have no internet connection.</string>
+    <string name="finding_trains_text">Finding trains...</string>
 </resources>

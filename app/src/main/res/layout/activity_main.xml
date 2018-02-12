@@ -15,9 +15,8 @@
         android:layout_alignParentBottom="true"
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
-        app:menu="@menu/nav_items">
-
-    </android.support.design.widget.BottomNavigationView>
+        app:menu="@menu/nav_items"
+        android:background="?android:attr/windowBackground" />
 
     <FrameLayout
         android:id="@+id/main_frame"
