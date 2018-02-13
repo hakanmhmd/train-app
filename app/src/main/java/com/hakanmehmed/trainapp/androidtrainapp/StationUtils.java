@@ -21,7 +21,7 @@ public class StationUtils {
 
     }
 
-    public static String[] getStations(Context context){
+    static String[] getStations(Context context){
         if(stations == null){
             stations = new HashMap<>();
             populateMap(context);
@@ -35,6 +35,14 @@ public class StationUtils {
             stationNames[i++] = stationName;
         }
         return stationNames;
+    }
+
+    public static String getCode(String station){
+        String code = stations.get(station);
+        if(code == null){
+            Log.v(TAG, "INVALID STATION");
+        }
+        return code;
     }
 
     private static void populateMap(Context context) {

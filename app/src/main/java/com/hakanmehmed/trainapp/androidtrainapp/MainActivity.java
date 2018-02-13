@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity  {
-
+    // TODO: change colors of layouts
     private BottomNavigationView mMainNav;
     private FrameLayout mMainFrame;
 

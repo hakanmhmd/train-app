@@ -8,7 +8,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="saved_journies">Saved journies</string>
+    <string name="saved_journies">Saved journeys</string>
     <string name="origin_station">Origin station...</string>
     <string name="destination_station">Destination station...</string>
     <string name="seach_button_text">Search</string>
@@ -18,4 +18,6 @@
     <string name="no_trains">Unable to find trains.</string>
     <string name="error_message">This may be because the servers are offline or you have no internet connection.</string>
     <string name="finding_trains_text">Finding trains...</string>
+    <string name="error_text">Error</string>
+    <string name="ok_text">OK</string>
 </resources>
