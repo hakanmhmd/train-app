@@ -39,20 +39,18 @@ public class TrainFinderAPI {
     private final Retrofit retrofit = builder.build();
     private final APIClient apiClient = retrofit.create(APIClient.class);
 
-    void getTrains(ApiQuery apiQuery, View view){
+    void getTrains(ApiQuery apiQuery, final CustomCallback<JourneySearchResponse> callback){
         Call<JourneySearchResponse> call = apiClient.getJourneys(apiQuery);
 
         call.enqueue(new Callback<JourneySearchResponse>() {
             @Override
             public void onResponse(Call<JourneySearchResponse> call, Response<JourneySearchResponse> response) {
-                Log.v(TAG, "API CALL SUCCEEDED");
-                // do something with view
+                callback.onSuccess(response);
             }
 
             @Override
             public void onFailure(Call<JourneySearchResponse> call, Throwable t) {
-                Log.v(TAG, "API CALL FAILED");
-                // do something with view
+                callback.onFailure(t);
             }
         });
     }

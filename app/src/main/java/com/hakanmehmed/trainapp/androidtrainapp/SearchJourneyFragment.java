@@ -23,6 +23,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import retrofit2.Response;
 
 
 public class SearchJourneyFragment extends Fragment {
@@ -137,21 +138,33 @@ public class SearchJourneyFragment extends Fragment {
         }
     }
 
+
+
     private void getTrains(String from, String to) {
         Log.v(TAG, "Making api calls.");
 
-        api.getTrains(TrainFinderAPI.buildApiQuery(from, to), view);
+        api.getTrains(TrainFinderAPI.buildApiQuery(from, to), new CustomCallback<JourneySearchResponse>() {
+            @Override
+            public void onSuccess(Response<JourneySearchResponse> response) {
+                Log.d(TAG, "Api call successful!");
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                Log.d(TAG, "Api call failed!");
+            }
+        });
 
 //                new CustomListeners.TrainlineCallback() {
 //            @Override
 //            public void onResponse(Response<JourneyData> response) {
-//                Log.d(TAG, context.getString(R.string.requestSuccess, context.getString(R.string.endpointJourneys)));
+//
 //                view.showJourneys(response.body());
 //            }
 //
 //            @Override
 //            public void onFailure(Throwable t) {
-//                Log.d(TAG, context.getString(R.string.requestFail, context.getString(R.string.endpointJourneys)));
+//
 //                view.failedGettingJourneys();
 //                t.printStackTrace();
 //            }
