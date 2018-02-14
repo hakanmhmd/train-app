@@ -149,10 +149,10 @@
             android:layout_marginTop="32dp" />
 
         <TextView
-            android:text="@string/no_trains"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/loadingTv"
+            android:id="@+id/loadingTvBig"
             android:textSize="22sp"
             android:paddingTop="32dp"
             android:paddingLeft="24dp"
@@ -160,10 +160,10 @@
             android:textAlignment="center" />
 
         <TextView
-            android:text="@string/error_message"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/loadingTv2"
+            android:id="@+id/loadingTvSmall"
             android:paddingLeft="32dp"
             android:paddingRight="32dp"
             android:textAlignment="center"
@@ -173,7 +173,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/searchResults"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+        </android.support.v7.widget.RecyclerView>
 
     </LinearLayout>
 

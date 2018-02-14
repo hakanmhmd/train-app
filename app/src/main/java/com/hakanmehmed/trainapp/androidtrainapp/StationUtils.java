@@ -61,9 +61,6 @@ public class StationUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     public static String isInputValid(String from, String to) {

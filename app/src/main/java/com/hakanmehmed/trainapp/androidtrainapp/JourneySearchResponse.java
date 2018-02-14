@@ -1,5 +1,7 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,8 +9,9 @@ import java.util.List;
  */
 
 class JourneySearchResponse {
-    private String journeySearchId;
-    private List<Journey> journeys = null;
+    @SerializedName("journeySearchId") private String journeySearchId;
+    @SerializedName("journeys") private List<Journey> journeys;
+    // TODO: more fields here
 
     public JourneySearchResponse(String journeySearchId, List<Journey> journeys) {
         this.journeySearchId = journeySearchId;

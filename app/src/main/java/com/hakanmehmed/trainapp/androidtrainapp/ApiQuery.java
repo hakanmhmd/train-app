@@ -1,20 +1,22 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hakanmehmed on 13/02/2018.
  * Query class
  */
 
 class ApiQuery {
-    private Integer Adults;
-    private Integer Children;
-    private String Origin;
-    private String Destination;
-    private String JourneyType; // different types
-    private OutboundJourney outboundJourney;
-    private Boolean ShowCancelledTrains;
-    //TODO: more field
+    @SerializedName("adults") private Integer adults;
+    @SerializedName("children") private Integer children;
+    @SerializedName("origin") private String origin;
+    @SerializedName("destination") private String destination;
+    @SerializedName("journeyType") private String journeyType; // different types
+    @SerializedName("outboundJourney") private OutboundJourney outboundJourney;
+    @SerializedName("showCancelledTrains") private Boolean showCancelledTrains;
+    //TODO: more fields
 
     public ApiQuery() {
     }
@@ -23,52 +25,52 @@ class ApiQuery {
 
 
     public ApiQuery(Integer adults, Integer children, String origin, String destination, String journeyType, Boolean showCancelledTrains) {
-        Adults = adults;
-        Children = children;
-        Origin = origin;
-        Destination = destination;
-        JourneyType = journeyType;
-        ShowCancelledTrains = showCancelledTrains;
+        this.adults = adults;
+        this.children = children;
+        this.origin = origin;
+        this.destination = destination;
+        this.journeyType = journeyType;
+        this.showCancelledTrains = showCancelledTrains;
     }
 
     public Integer getAdults() {
-        return Adults;
+        return adults;
     }
 
     public void setAdults(Integer adults) {
-        Adults = adults;
+        this.adults = adults;
     }
 
     public Integer getChildren() {
-        return Children;
+        return children;
     }
 
     public void setChildren(Integer children) {
-        Children = children;
+        this.children = children;
     }
 
     public String getOrigin() {
-        return Origin;
+        return origin;
     }
 
     public void setOrigin(String origin) {
-        Origin = origin;
+        this.origin = origin;
     }
 
     public String getDestination() {
-        return Destination;
+        return destination;
     }
 
     public void setDestination(String destination) {
-        Destination = destination;
+        this.destination = destination;
     }
 
     public String getJourneyType() {
-        return JourneyType;
+        return journeyType;
     }
 
     public void setJourneyType(String journeyType) {
-        JourneyType = journeyType;
+        this.journeyType = journeyType;
     }
 
     public OutboundJourney getOutboundJourney() {
@@ -80,10 +82,10 @@ class ApiQuery {
     }
 
     public Boolean getShowCancelledTrains() {
-        return ShowCancelledTrains;
+        return showCancelledTrains;
     }
 
     public void setShowCancelledTrains(Boolean showCancelledTrains) {
-        ShowCancelledTrains = showCancelledTrains;
+        this.showCancelledTrains = showCancelledTrains;
     }
 }

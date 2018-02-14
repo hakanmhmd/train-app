@@ -4,15 +4,15 @@
 
     <item
         android:id="@+id/nav_locate"
-        android:icon="@drawable/ic_location_on_black_24dp"
+        android:icon="@drawable/ic_location_24dp"
         android:title="@string/nav_location" />
     <item
         android:id="@+id/nav_search_journey"
-        android:icon="@drawable/ic_train_black_24dp"
+        android:icon="@drawable/ic_train_24dp"
         android:title="@string/nav_schedule" />
 
     <item
         android:id="@+id/nav_saved_journey"
-        android:icon="@drawable/ic_save_black_24dp"
+        android:icon="@drawable/ic_save_24dp"
         android:title="@string/saved_journies" />
 </menu>

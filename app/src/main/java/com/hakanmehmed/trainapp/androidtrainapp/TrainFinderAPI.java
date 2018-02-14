@@ -62,7 +62,7 @@ public class TrainFinderAPI {
         int children = 0;
         String journeyType = "Single";
         boolean showCancelled = true;
-        OutboundJourney outboundJourney = new OutboundJourney(getCurrentTime(), "LeaveAfter");
+        OutboundJourney outboundJourney = new OutboundJourney(Utils.getCurrentTime(), "LeaveAfter");
 
         ApiQuery q = new ApiQuery(adults, children, fromCode, toCode, journeyType, showCancelled);
         q.setOutboundJourney(outboundJourney);
@@ -70,8 +70,5 @@ public class TrainFinderAPI {
         return q;
     }
 
-    private static String getCurrentTime(){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        return df.format(Calendar.getInstance().getTime());
-    }
+
 }

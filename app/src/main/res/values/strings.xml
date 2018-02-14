@@ -15,9 +15,16 @@
     <string name="recent_search">Recently searched</string>
     <string name="no_recent_searches">No recent searches.</string>
     <string name="swap_icon_desc">Swap from and destination stations</string>
-    <string name="no_trains">Unable to find trains.</string>
-    <string name="error_message">This may be because the servers are offline or you have no internet connection.</string>
+    <string name="no_trains">Unable to find any trains.</string>
+    <string name="connection_error_message">Either servers are down or you have no internet connection.</string>
     <string name="finding_trains_text">Finding trains...</string>
-    <string name="error_text">Error</string>
     <string name="ok_text">OK</string>
+    <string name="no_changes">No changes</string>
+    <string name="no_platform">Platform -</string>
+    <string name="platform">Platform %1$s</string>
+
+    <plurals name="changes">
+        <item quantity="one">%1$d change</item>
+        <item quantity="many">%1$d changes</item>
+    </plurals>
 </resources>

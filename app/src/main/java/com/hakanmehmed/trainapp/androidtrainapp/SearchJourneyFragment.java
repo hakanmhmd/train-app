@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,10 +21,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Response;
+
+import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 public class SearchJourneyFragment extends Fragment {
@@ -52,10 +59,10 @@ public class SearchJourneyFragment extends Fragment {
     LinearLayout resultsLayout;
     @BindView(R.id.progress_bar)
     ProgressBar progressBar;
-    @BindView(R.id.loadingTv)
-    TextView loadingTv;
-    @BindView(R.id.loadingTv2)
-    TextView loadingTv2;
+    @BindView(R.id.loadingTvBig)
+    TextView loadingTvBig;
+    @BindView(R.id.loadingTvSmall)
+    TextView loadingTvSmall;
     @BindView(R.id.searchResults)
     RecyclerView searchResults;
 
@@ -89,6 +96,15 @@ public class SearchJourneyFragment extends Fragment {
         to_station.setAdapter(adapter);
         from_station.setAdapter(adapter);
 
+        from_station.setText("London Euston");
+        to_station.setText("Hatfield");
+
+
+        searchResults.setHasFixedSize(true);
+        searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        //TODO same for recent searches
+
         return view;
     }
 
@@ -118,14 +134,11 @@ public class SearchJourneyFragment extends Fragment {
         hideKeyboard(getActivity());
         //StationUtils.saveRecentSearch(from, to, getContext());
 
-        recentSearchesLayout.setVisibility(View.GONE);
-
-        progressBar.setVisibility(View.VISIBLE);
-        loadingTv.setVisibility(View.VISIBLE);
-        loadingTv2.setVisibility(View.VISIBLE);
-        loadingTv.setText(R.string.finding_trains_text);
-        loadingTv2.setText("LALAL");
-
+        recentSearchesLayout.setVisibility(GONE);
+        progressBar.setVisibility(VISIBLE);
+        loadingTvBig.setVisibility(VISIBLE);
+        loadingTvBig.setText(R.string.finding_trains_text);
+        loadingTvSmall.setVisibility(GONE);
         getTrains(from, to);
 
     }
@@ -138,8 +151,6 @@ public class SearchJourneyFragment extends Fragment {
         }
     }
 
-
-
     private void getTrains(String from, String to) {
         Log.v(TAG, "Making api calls.");
 
@@ -147,28 +158,35 @@ public class SearchJourneyFragment extends Fragment {
             @Override
             public void onSuccess(Response<JourneySearchResponse> response) {
                 Log.d(TAG, "Api call successful!");
+                showTrains(response.body());
             }
 
             @Override
             public void onFailure(Throwable throwable) {
                 Log.d(TAG, "Api call failed!");
+                showFailMessage();
             }
         });
+    }
 
-//                new CustomListeners.TrainlineCallback() {
-//            @Override
-//            public void onResponse(Response<JourneyData> response) {
-//
-//                view.showJourneys(response.body());
-//            }
-//
-//            @Override
-//            public void onFailure(Throwable t) {
-//
-//                view.failedGettingJourneys();
-//                t.printStackTrace();
-//            }
-//        });
+    private void showTrains(JourneySearchResponse response) {
+        searchResults.setVisibility(VISIBLE);
+        progressBar.setVisibility(GONE);
+        loadingTvBig.setVisibility(GONE);
+        loadingTvSmall.setVisibility(GONE);
+
+        // response should be parsed to a list of Journey objects
+        List<Journey> results = response.getJourneys();
+        searchResults.setAdapter(new JourneySearchAdapter(results, getContext()));
+    }
+
+    private void showFailMessage() {
+        searchResults.setVisibility(GONE);
+        progressBar.setVisibility(GONE);
+        loadingTvBig.setVisibility(VISIBLE);
+        loadingTvBig.setText(R.string.no_trains);
+        loadingTvSmall.setVisibility(VISIBLE);
+        loadingTvSmall.setText(R.string.connection_error_message);
     }
 
     public void swapSearchInputTextField(){
@@ -186,11 +204,4 @@ public class SearchJourneyFragment extends Fragment {
     public SearchJourneyFragment() {
         // Required empty public constructor
     }
-
-
-
-
-
-
-
 }

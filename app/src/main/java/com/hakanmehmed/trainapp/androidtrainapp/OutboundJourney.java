@@ -1,16 +1,18 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hakanmehmed on 13/02/2018.
  */
 
 class OutboundJourney {
-    private String Time;
-    private String Type;
+    @SerializedName("time") private String time;
+    @SerializedName("type") private String type;
 
     public OutboundJourney(String time, String type) {
-        Time = time;
-        Type = type;
+        this.time = time;
+        this.type = type;
     }
 
     public OutboundJourney() {
@@ -18,18 +20,18 @@ class OutboundJourney {
     }
 
     public String getTime() {
-        return Time;
+        return time;
     }
 
     public void setTime(String time) {
-        Time = time;
+        this.time = time;
     }
 
     public String getType() {
-        return Type;
+        return type;
     }
 
     public void setType(String type) {
-        Type = type;
+        this.type = type;
     }
 }

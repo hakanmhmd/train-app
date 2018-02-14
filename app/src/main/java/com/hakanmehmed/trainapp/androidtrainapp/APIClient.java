@@ -7,11 +7,11 @@ import retrofit2.http.POST;
 
 /**
  * Created by hakanmehmed on 13/02/2018.
- * Retofit interface client
+ * Retrofit interface client
  */
 
 public interface APIClient {
-    @Headers({"X-Api-Version: 2.0", "X-Platform-Type: Android", "X-Consumer-Version: 930"})
+    @Headers({"X-Api-Version: 2.9", "X-Platform-Type: Android", "X-Consumer-Version: 1000"})
     @POST("mobile/journeys")
     Call<JourneySearchResponse> getJourneys(@Body ApiQuery apiQuery);
 
