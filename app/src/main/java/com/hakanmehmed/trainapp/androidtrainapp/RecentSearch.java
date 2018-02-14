@@ -30,6 +30,20 @@ public class RecentSearch {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof RecentSearch) {
+            return this.from.equals(((RecentSearch) obj).getFrom()) &&
+                    this.to.equals(((RecentSearch) obj).getTo());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return getFrom().hashCode() + getTo().hashCode();
+    }
+
+    @Override
     public String toString() {
         return "RecentSearch{" +
                 "from='" + from + '\'' +

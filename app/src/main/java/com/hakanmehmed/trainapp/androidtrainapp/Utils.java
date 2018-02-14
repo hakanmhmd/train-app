@@ -65,15 +65,17 @@ public class Utils {
 
     static void saveSearch(String from, String to, Context context){
         ArrayList<RecentSearch> recent = getSearches(context);
-
+        RecentSearch newSearch = new RecentSearch(from, to);
         if(recent.size() != 0) {
-            if (recent.get(0).getFrom() != null && recent.get(0).getTo() != null
-                    && recent.get(0).getFrom().equals(from)
-                    && recent.get(0).getTo().equals(to)) return;
+//            if (recent.get(0).getFrom() != null && recent.get(0).getTo() != null
+//                    && recent.get(0).getFrom().equals(from)
+//                    && recent.get(0).getTo().equals(to)) return;
+            if(recent.contains(newSearch)){
+                recent.remove(recent.indexOf(newSearch));
+            }
         }
 
-
-        recent.add(0, new RecentSearch(from, to));
+        recent.add(0, newSearch);
 
         SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         prefs.edit().putString("recent_searches", new Gson().toJson(recent)).apply();

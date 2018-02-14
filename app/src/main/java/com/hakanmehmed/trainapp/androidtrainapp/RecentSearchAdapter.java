@@ -1,6 +1,7 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +21,14 @@ import butterknife.ButterKnife;
 
 class RecentSearchAdapter extends RecyclerView.Adapter<RecentSearchAdapter.ViewHolder> {
     private static final String TAG = "RecentSearchAdapter";
-    private ArrayList<RecentSearch> recentSearches;
-    private Context context;
+    private final Fragment fragment;
+    private final ArrayList<RecentSearch> recentSearches;
+    private final Context context;
 
-    public RecentSearchAdapter(ArrayList<RecentSearch> recentSearches, Context context) {
+    public RecentSearchAdapter(ArrayList<RecentSearch> recentSearches, Context context, Fragment fragment) {
         this.recentSearches = recentSearches;
         this.context = context;
+        this.fragment = fragment;
     }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -67,8 +70,7 @@ class RecentSearchAdapter extends RecyclerView.Adapter<RecentSearchAdapter.ViewH
                 @Override
                 public void onClick(View view) {
                     // populate fields
-                    int pos = getAdapterPosition();
-                    Toast.makeText(context ,"POPULATE ", Toast.LENGTH_SHORT).show();
+                    ((SearchJourneyFragment)fragment).fillUpFields(recentSearches.get(getAdapterPosition()));
                 }
             });
         }
@@ -85,6 +87,8 @@ class RecentSearchAdapter extends RecyclerView.Adapter<RecentSearchAdapter.ViewH
             routeTv.setText(context.getString(R.string.route, arrivalStation, departureStation));
         }
     }
+
+
 
 
 }

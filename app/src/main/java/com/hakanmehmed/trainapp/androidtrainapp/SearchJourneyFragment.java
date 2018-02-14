@@ -132,7 +132,7 @@ public class SearchJourneyFragment extends Fragment {
             //Log.v(TAG, Arrays.toString(searches));
             noRecentSearchTv.setVisibility(View.GONE);
             recentSearches.setVisibility(View.VISIBLE);
-            recentSearches.setAdapter(new RecentSearchAdapter(searches, getContext()));
+            recentSearches.setAdapter(new RecentSearchAdapter(searches, getContext(), this));
         }
     }
 
@@ -177,6 +177,13 @@ public class SearchJourneyFragment extends Fragment {
             InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
+    }
+
+    void fillUpFields(RecentSearch recentSearch) {
+        from_station.setText(recentSearch.getFrom());
+        to_station.setText(recentSearch.getTo());
+        from_station.clearFocus();
+        to_station.clearFocus();
     }
 
     private void getTrains(String from, String to) {
