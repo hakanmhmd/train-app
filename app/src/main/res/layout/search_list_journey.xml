@@ -130,7 +130,7 @@
             android:layout_alignParentEnd="true" />
 
         <TextView
-            android:text="1 change"
+            android:text="0 change"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/numberOfChangesTv"
@@ -139,7 +139,7 @@
             android:layout_above="@+id/remindAtTv"/>
 
         <TextView
-            android:text="Remind me at 22:31"
+            android:text="Remind me at 00:00"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/remindAtTv"

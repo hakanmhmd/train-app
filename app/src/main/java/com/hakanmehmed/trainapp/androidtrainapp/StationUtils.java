@@ -37,7 +37,18 @@ public class StationUtils {
         return stationNames;
     }
 
-    public static String getCode(String station){
+    static String getNameFromStationCode(String code){
+        if(stations.containsValue(code)){
+            for (String key : stations.keySet()) {
+                if (stations.get(key).equals(code)) {
+                    return key;
+                }
+            }
+        }
+        return null;
+    }
+
+    static String getCodeFromStationName(String station){
         String code = stations.get(station);
         if(code == null){
             Log.v(TAG, "INVALID STATION");
@@ -63,7 +74,7 @@ public class StationUtils {
         }
     }
 
-    public static String isInputValid(String from, String to) {
+    static String isInputValid(String from, String to) {
         if(from == null || from.isEmpty()){
             return "From station is missing.";
         }

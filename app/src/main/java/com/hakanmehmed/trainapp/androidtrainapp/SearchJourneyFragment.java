@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -177,6 +179,10 @@ public class SearchJourneyFragment extends Fragment {
 
         // response should be parsed to a list of Journey objects
         List<Journey> results = response.getJourneys();
+
+        LayoutAnimationController animation =
+                AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+        searchResults.setLayoutAnimation(animation);
         searchResults.setAdapter(new JourneySearchAdapter(results, getContext()));
     }
 

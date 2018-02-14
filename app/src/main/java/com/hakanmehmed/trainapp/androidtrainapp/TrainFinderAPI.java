@@ -1,11 +1,5 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import android.util.Log;
-import android.view.View;
-
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -56,8 +50,8 @@ public class TrainFinderAPI {
     }
 
     static ApiQuery buildApiQuery(String from, String to){
-        String fromCode = StationUtils.getCode(from);
-        String toCode = StationUtils.getCode(to);
+        String fromCode = StationUtils.getCodeFromStationName(from);
+        String toCode = StationUtils.getCodeFromStationName(to);
         int adults = 1;
         int children = 0;
         String journeyType = "Single";

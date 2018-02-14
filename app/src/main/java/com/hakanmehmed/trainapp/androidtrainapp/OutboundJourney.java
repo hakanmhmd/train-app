@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
 
 class OutboundJourney {
     @SerializedName("time") private String time;
-    @SerializedName("type") private String type;
+    @SerializedName("type") private String type; // TODO: type really needed?
 
     public OutboundJourney(String time, String type) {
         this.time = time;
