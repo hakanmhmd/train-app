@@ -23,6 +23,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import retrofit2.Response;
 
-import static android.view.View.*;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
@@ -105,9 +106,34 @@ public class SearchJourneyFragment extends Fragment {
         searchResults.setHasFixedSize(true);
         searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //TODO same for recent searches
+        recentSearches.setHasFixedSize(true);
+        recentSearches.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        showRecentSearches();
 
         return view;
+    }
+
+    private void showRecentSearches() {
+        ArrayList<RecentSearch> searches = Utils.getSearches(getContext());
+//        List<RecentSearch> list = new ArrayList<>();
+//        for (RecentSearch recentSearch : searches) {
+//            if (recentSearch.getFrom() != null && recentSearch.getTo() != null) {
+//                list.add(recentSearch);
+//            }
+//        }
+//
+//        searches = list.toArray(new RecentSearch[list.size()]);
+
+        if(searches == null || searches.size() == 0){
+            noRecentSearchTv.setVisibility(View.VISIBLE);
+            recentSearches.setVisibility(View.GONE);
+        } else {
+            //Log.v(TAG, Arrays.toString(searches));
+            noRecentSearchTv.setVisibility(View.GONE);
+            recentSearches.setVisibility(View.VISIBLE);
+            recentSearches.setAdapter(new RecentSearchAdapter(searches, getContext()));
+        }
     }
 
     private void findTrains() {
@@ -134,7 +160,7 @@ public class SearchJourneyFragment extends Fragment {
         }
 
         hideKeyboard(getActivity());
-        //StationUtils.saveRecentSearch(from, to, getContext());
+        Utils.saveSearch(from, to, getContext());
 
         recentSearchesLayout.setVisibility(GONE);
         progressBar.setVisibility(VISIBLE);

@@ -1,12 +1,21 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by hakanmehmed on 14/02/2018.
@@ -52,5 +61,31 @@ public class Utils {
             return "";
         }
 
+    }
+
+    static void saveSearch(String from, String to, Context context){
+        ArrayList<RecentSearch> recent = getSearches(context);
+
+        if(recent.size() != 0) {
+            if (recent.get(0).getFrom() != null && recent.get(0).getTo() != null
+                    && recent.get(0).getFrom().equals(from)
+                    && recent.get(0).getTo().equals(to)) return;
+        }
+
+
+        recent.add(0, new RecentSearch(from, to));
+
+        SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
+        prefs.edit().putString("recent_searches", new Gson().toJson(recent)).apply();
+    }
+
+    static ArrayList<RecentSearch> getSearches(Context context) {
+        SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
+
+        if(prefs.getString("recent_searches", "default").equals("default")){
+            return new ArrayList<>();
+        }
+
+        return new Gson().fromJson(prefs.getString("recent_searches", ""), new TypeToken<ArrayList<RecentSearch>>() {}.getType());
     }
 }
