@@ -99,20 +99,6 @@
             android:layout_alignStart="@+id/arrivalStationTv" />
 
 
-
-
-
-
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_close_48px"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:id="@+id/deleteBtn"
-            android:clickable="true"/>
-
         <TextView
             android:text="0hr 00m"
             android:layout_width="wrap_content"

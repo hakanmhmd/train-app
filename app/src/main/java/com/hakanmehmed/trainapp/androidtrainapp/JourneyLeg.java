@@ -37,7 +37,7 @@ import com.google.gson.annotations.SerializedName;
  </JourneyLeg>
  */
 
-class JouneryLeg {
+class JourneyLeg {
     @SerializedName("id") private Integer id;
     @SerializedName("origin") private Origin origin;
     @SerializedName("destination") private Destination destination;
@@ -49,7 +49,7 @@ class JouneryLeg {
     @SerializedName("seatingClass") private String seatingClass;
     @SerializedName("isCancelled") private Boolean isCancelled;
 
-    public JouneryLeg(Integer id, Origin origin, Destination destination,
+    public JourneyLeg(Integer id, Origin origin, Destination destination,
                       String transportMode, String reservationFlag, String trainId,
                       String serviceProviderCode, String serviceProviderName,
                       String seatingClass, Boolean isCancelled) {

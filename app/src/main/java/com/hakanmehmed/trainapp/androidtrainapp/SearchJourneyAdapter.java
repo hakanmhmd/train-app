@@ -10,15 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
-
-import static android.view.View.GONE;
 
 /**
  * Created by hakanmehmed on 13/02/2018.
@@ -57,19 +53,10 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<SearchJourneyAdapter.Vie
         @BindView(R.id.arrivalPlatformTv)
         TextView arrivalPlatformTv;
 
-        //@BindView(R.id.routeTv)
-        //TextView routeTv;
         @BindView(R.id.numberOfChangesTv)
         TextView numberOfChangesTv;
         @BindView(R.id.durationTv)
         TextView durationTv;
-        //@BindView(R.id.remindAtTv)
-        //TextView remindAtTv;
-
-        @BindView(R.id.deleteBtn)
-        ImageView deleteBtn;
-
-        @OnClick(R.id.deleteBtn) void buttonPressed(){ removeJourney(getAdapterPosition()); }
 
         public ViewHolder(View v) {
             super(v);
@@ -127,15 +114,6 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<SearchJourneyAdapter.Vie
         void setDuration(String departureTime, String arrivalTime){
             durationTv.setText(Utils.getDifference(departureTime, arrivalTime));
         }
-
-        //void setReminder(){
-          //  remindAtTv.setText("");
-        //}
-
-        void displayDeleteIcon(boolean display){
-            if(!display) deleteBtn.setVisibility(GONE);
-        }
-
     }
 
     @Override
@@ -152,29 +130,22 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<SearchJourneyAdapter.Vie
         if(journey == null) return;
         Log.v(TAG, journey.toString());
 
-        List<JouneryLeg> journeyLegs = journey.getLegs();
+        List<JourneyLeg> journeyLegs = journey.getLegs();
 
-        JouneryLeg departureLeg = journeyLegs.get(0);
+        JourneyLeg departureLeg = journeyLegs.get(0);
         String departureStation = journey.getOrigin();
         String departurePlatform = departureLeg.getOrigin().getPlatform();
         String departureDateTime = departureLeg.getOrigin().getScheduledTime();
         holder.setDeparture(departureStation, departurePlatform, Utils.formatTime(departureDateTime));
 
-        JouneryLeg arrivalLeg = journeyLegs.get(journeyLegs.size() - 1);
+        JourneyLeg arrivalLeg = journeyLegs.get(journeyLegs.size() - 1);
         String arrivalStation = journey.getDestination();
         String arrivalPlatform = arrivalLeg.getDestination().getPlatform();
         String arrivalDateTime = arrivalLeg.getDestination().getScheduledTime();
         holder.setArrival(arrivalStation, arrivalPlatform, Utils.formatTime(arrivalDateTime));
 
-        //holder.setRoute(StationUtils.getNameFromStationCode(departureLeg.getOrigin().getStationCode()),
-          //      StationUtils.getNameFromStationCode(arrivalLeg.getDestination().getStationCode()));
-
         holder.setDuration(journey.getDepartureDateTime(), journey.getArrivalDateTime());
-
         holder.setNumberOfChanges(journeyLegs.size()-1);
-
-        holder.displayDeleteIcon(false);
-        //holder.setReminder();
 
     }
 
@@ -183,11 +154,5 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<SearchJourneyAdapter.Vie
         return allJourneys == null ? 0 : allJourneys.size();
     }
 
-    private void removeJourney(int adapterPosition) {
-        allJourneys.remove(adapterPosition);
-        notifyItemRemoved(adapterPosition);
-        notifyItemRangeChanged(adapterPosition, allJourneys.size());
-        // TODO: add popup are you sure you want to delete?
-        Toast.makeText(context ,"Removed : ", Toast.LENGTH_SHORT).show();
-    }
+
 }

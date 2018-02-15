@@ -23,9 +23,14 @@
     <string name="no_changes">No changes</string>
     <string name="one_change">1 change</string>
     <string name="more_changes">%d changes</string>
-    <string name="route">Train from %1$s to %2$s</string>
+    <string name="route">%1$s to %2$s</string>
     <string name="no_subscribed_journey_text">You have not subscribed to any journeys yet.</string>
 
     <string name="remind_one_minute">Remind me 1 minute before departure</string>
     <string name="remind_more_minutes">Remind me %d minutes before departure</string>
+    <string name="remind_at">Remind me at %s</string>
+    <string name="subscribe_text">Subscribe</string>
+    <string name="yes">Yes</string>
+    <string name="delete_question_text">Are you sure you want to delete?</string>
+    <string name="no">No</string>
 </resources>

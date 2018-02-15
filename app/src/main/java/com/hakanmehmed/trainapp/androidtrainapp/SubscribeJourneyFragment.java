@@ -8,6 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LayoutAnimationController;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -61,18 +63,30 @@ public class SubscribeJourneyFragment extends Fragment {
             subscribedJourneys.setVisibility(VISIBLE);
         }
 
+        LayoutAnimationController animation =
+                AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
+        subscribedJourneys.setLayoutAnimation(animation);
         subscribedJourneys.setAdapter(new SubscribeJourneyAdapter(journeys, getContext(), this));
     }
 
-    public void deleteJourney(final Journey thisJourney){
-        final CustomSearchResultAlertDialog customSearchResultAlertDialog =
-                new CustomSearchResultAlertDialog(getActivity());
+    public void deleteJourney(final Journey thisJourney, final int index){
+        final CustomDeleteAlertDialog customSearchResultAlertDialog =
+                new CustomDeleteAlertDialog(getActivity());
 
         customSearchResultAlertDialog.inflateDialog(thisJourney);
-        customSearchResultAlertDialog.setListener(new View.OnClickListener() {
+        customSearchResultAlertDialog.setYesBtnListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Utils.unsubscribeJourney(thisJourney, getContext());
+                Utils.unsubscribeJourney(index, getContext());
+                loadSubscribedJourneys();
+                customSearchResultAlertDialog.cancel();
+            }
+        });
+
+        customSearchResultAlertDialog.setNoBtnListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loadSubscribedJourneys();
                 customSearchResultAlertDialog.cancel();
             }
         });

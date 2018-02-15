@@ -14,13 +14,15 @@ class Journey {
     @SerializedName("destination") private String destination;
     @SerializedName("departureDateTime") private String departureDateTime;
     @SerializedName("arrivalDateTime") private String arrivalDateTime;
-    @SerializedName("legs") private List<JouneryLeg> legs;
+    @SerializedName("legs") private List<JourneyLeg> legs;
     @SerializedName("journeyStatus") private String journeyStatus;
+
+
 
     // used for subscriptions
     private Integer reminder;
 
-    public Journey(Integer id, String origin, String destination, String departureDateTime, String arrivalDateTime, List<JouneryLeg> legs, String journeyStatus) {
+    public Journey(Integer id, String origin, String destination, String departureDateTime, String arrivalDateTime, List<JourneyLeg> legs, String journeyStatus) {
         this.id = id;
         this.origin = origin;
         this.destination = destination;
@@ -71,11 +73,11 @@ class Journey {
         this.arrivalDateTime = arrivalDateTime;
     }
 
-    public List<JouneryLeg> getLegs() {
+    public List<JourneyLeg> getLegs() {
         return legs;
     }
 
-    public void setLegs(List<JouneryLeg> legs) {
+    public void setLegs(List<JourneyLeg> legs) {
         this.legs = legs;
     }
 
@@ -102,5 +104,8 @@ class Journey {
 
     public void setReminder(int reminder) {
         this.reminder = reminder;
+    }
+    public Integer getReminder() {
+        return reminder;
     }
 }

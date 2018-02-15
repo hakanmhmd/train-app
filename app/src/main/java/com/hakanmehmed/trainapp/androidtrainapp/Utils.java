@@ -2,7 +2,6 @@ package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -10,13 +9,10 @@ import com.google.gson.reflect.TypeToken;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import static android.content.Context.CONTEXT_IGNORE_SECURITY;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -85,11 +81,11 @@ public class Utils {
                 new TypeToken<ArrayList<Journey>>() {}.getType());
     }
 
-    public static void unsubscribeJourney(Journey journey, Context context) {
+    public static void unsubscribeJourney(int index, Context context) {
         ArrayList<Journey> journeys = getSubscribedJourneys(context);
         //NotificationReceiver.removePolling(journeys.get(index), context);
         SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
-        journeys.remove(journey);
+        journeys.remove(index);
 
         prefs.edit().putString("subscribed_journeys", new Gson().toJson(journeys)).apply();
     }

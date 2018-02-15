@@ -35,7 +35,7 @@ class CustomSearchResultAlertDialog {
     }
 
     int getReminder(){
-        return (timeSlider.getProgress() + 1) * 5;
+        return timeSlider.getProgress() * 5;
     }
 
     void inflateDialog(Journey journey){
@@ -48,7 +48,7 @@ class CustomSearchResultAlertDialog {
         timeSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                int minutes = (i + 1) * 5;
+                int minutes = i * 5;
                 if(minutes == 1){
                     reminderText.setText(activity.getString(R.string.remind_one_minute));
                 } else {

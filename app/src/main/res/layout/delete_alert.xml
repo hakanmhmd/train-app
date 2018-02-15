@@ -7,33 +7,32 @@
     android:paddingBottom="16dp">
 
     <Button
-        android:text="@string/subscribe_text"
-        android:layout_width="120dp"
+        android:text="@string/yes"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:id="@+id/subscribeBtn"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/timeSlider"
-         />
+        android:id="@+id/yesBtn"
+        android:layout_marginStart="20dp"
+        android:layout_below="@+id/deleteText"
+        android:layout_toEndOf="@+id/noBtn" />
 
     <TextView
-        android:text="Remind me 0 minutes before departure"
+        android:text="@string/delete_question_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/reminderText"
+        android:id="@+id/deleteText"
         android:layout_alignParentStart="true"
         android:textSize="17sp"
         android:layout_alignParentEnd="true"
         android:padding="8dp" />
 
-    <SeekBar
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/noBtn"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:id="@+id/timeSlider"
-        android:layout_below="@+id/reminderText"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:padding="8dp"
-        android:max="24"
-        android:progress="0" />
+        android:text="@string/no"
+        android:layout_marginStart="80dp"
+        android:layout_below="@+id/deleteText"
+        android:layout_alignParentStart="true" />
+
 
 </RelativeLayout>

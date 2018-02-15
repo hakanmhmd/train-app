@@ -37,7 +37,11 @@ public class StationUtils {
         return stationNames;
     }
 
-    static String getNameFromStationCode(String code){
+    static String getNameFromStationCode(String code, Context context){
+        if(stations == null){
+            stations = new HashMap<>();
+            populateMap(context);
+        }
         if(stations.containsValue(code)){
             for (String key : stations.keySet()) {
                 if (stations.get(key).equals(code)) {
