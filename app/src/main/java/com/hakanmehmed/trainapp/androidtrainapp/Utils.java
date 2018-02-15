@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static android.content.Context.CONTEXT_IGNORE_SECURITY;
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -63,22 +65,50 @@ public class Utils {
 
     }
 
+    // ----------------- SUBSCRIBED JOURNEYS ------------------------
+
+    public static void subscribedToJourney(Journey journey, Context context){
+        SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
+        /* generate a random id to associate with the journey for alarms and notifications */
+        journey.setId((int)(Math.random() * 10000));
+
+        ArrayList<Journey> currentSubscribedJourneys = getSubscribedJourneys(context);
+        currentSubscribedJourneys.add(0, journey);
+
+        prefs.edit().putString("subscribed_journeys", new Gson().toJson(currentSubscribedJourneys)).apply();
+        //NotificationReceiver.setupPolling(journey, context);
+    }
+
+    public static ArrayList<Journey> getSubscribedJourneys(Context context){
+        SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
+        return new Gson().fromJson(prefs.getString("subscribed_journeys", "[]"),
+                new TypeToken<ArrayList<Journey>>() {}.getType());
+    }
+
+    public static void unsubscribeJourney(Journey journey, Context context) {
+        ArrayList<Journey> journeys = getSubscribedJourneys(context);
+        //NotificationReceiver.removePolling(journeys.get(index), context);
+        SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
+        journeys.remove(journey);
+
+        prefs.edit().putString("subscribed_journeys", new Gson().toJson(journeys)).apply();
+    }
+
+
+    // ----------------- RECENT SEARCHES -----------------------------
     static void saveSearch(String from, String to, Context context){
-        ArrayList<RecentSearch> recent = getSearches(context);
+        ArrayList<RecentSearch> recentSearches = getSearches(context);
         RecentSearch newSearch = new RecentSearch(from, to);
-        if(recent.size() != 0) {
-//            if (recent.get(0).getFrom() != null && recent.get(0).getTo() != null
-//                    && recent.get(0).getFrom().equals(from)
-//                    && recent.get(0).getTo().equals(to)) return;
-            if(recent.contains(newSearch)){
-                recent.remove(recent.indexOf(newSearch));
+        if(recentSearches.size() != 0) {
+            if(recentSearches.contains(newSearch)){
+                recentSearches.remove(recentSearches.indexOf(newSearch));
             }
         }
 
-        recent.add(0, newSearch);
+        recentSearches.add(0, newSearch);
 
         SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
-        prefs.edit().putString("recent_searches", new Gson().toJson(recent)).apply();
+        prefs.edit().putString("recent_searches", new Gson().toJson(recentSearches)).apply();
     }
 
     static ArrayList<RecentSearch> getSearches(Context context) {

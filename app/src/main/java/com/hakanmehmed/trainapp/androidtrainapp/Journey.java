@@ -17,6 +17,9 @@ class Journey {
     @SerializedName("legs") private List<JouneryLeg> legs;
     @SerializedName("journeyStatus") private String journeyStatus;
 
+    // used for subscriptions
+    private Integer reminder;
+
     public Journey(Integer id, String origin, String destination, String departureDateTime, String arrivalDateTime, List<JouneryLeg> legs, String journeyStatus) {
         this.id = id;
         this.origin = origin;
@@ -25,6 +28,7 @@ class Journey {
         this.arrivalDateTime = arrivalDateTime;
         this.legs = legs;
         this.journeyStatus = journeyStatus;
+        reminder = null;
     }
 
     public Integer getId() {
@@ -94,5 +98,9 @@ class Journey {
                 ", legs=" + legs +
                 ", journeyStatus='" + journeyStatus + '\'' +
                 '}';
+    }
+
+    public void setReminder(int reminder) {
+        this.reminder = reminder;
     }
 }

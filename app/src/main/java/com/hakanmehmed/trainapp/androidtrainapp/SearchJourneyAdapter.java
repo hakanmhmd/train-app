@@ -1,6 +1,7 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,14 +25,16 @@ import static android.view.View.GONE;
  * Recycle view adapter
  */
 
-class JourneySearchAdapter extends RecyclerView.Adapter<JourneySearchAdapter.ViewHolder> {
-    private static final String TAG = "JourneySearchAdapter";
+class SearchJourneyAdapter extends RecyclerView.Adapter<SearchJourneyAdapter.ViewHolder> {
+    private static final String TAG = "SearchJourneyAdapter";
+    private final Fragment fragment;
     private List<Journey> allJourneys;
     private Context context;
 
-    public JourneySearchAdapter(List<Journey> results, Context context) {
+    public SearchJourneyAdapter(List<Journey> results, Context context, Fragment fragment) {
         allJourneys = results;
         this.context = context;
+        this.fragment = fragment;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -54,14 +57,14 @@ class JourneySearchAdapter extends RecyclerView.Adapter<JourneySearchAdapter.Vie
         @BindView(R.id.arrivalPlatformTv)
         TextView arrivalPlatformTv;
 
-        @BindView(R.id.routeTv)
-        TextView routeTv;
+        //@BindView(R.id.routeTv)
+        //TextView routeTv;
         @BindView(R.id.numberOfChangesTv)
         TextView numberOfChangesTv;
         @BindView(R.id.durationTv)
         TextView durationTv;
-        @BindView(R.id.remindAtTv)
-        TextView remindAtTv;
+        //@BindView(R.id.remindAtTv)
+        //TextView remindAtTv;
 
         @BindView(R.id.deleteBtn)
         ImageView deleteBtn;
@@ -71,6 +74,14 @@ class JourneySearchAdapter extends RecyclerView.Adapter<JourneySearchAdapter.Vie
         public ViewHolder(View v) {
             super(v);
             ButterKnife.bind(this, v);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ((SearchJourneyFragment)fragment).
+                            displayJourneyInfo(allJourneys.get(getAdapterPosition()));
+                }
+            });
         }
 
         void setDeparture(String station, String platform, String time){
@@ -95,13 +106,13 @@ class JourneySearchAdapter extends RecyclerView.Adapter<JourneySearchAdapter.Vie
             }
         }
 
-        void setRoute(String origin, String dest){
-            if(origin != null && dest != null){
-                routeTv.setText(context.getString(R.string.route, origin, dest));
-            } else {
-                routeTv.setText("");
-            }
-        }
+//        void setRoute(String origin, String dest){
+//            if(origin != null && dest != null){
+//                routeTv.setText(context.getString(R.string.route, origin, dest));
+//            } else {
+//                routeTv.setText("");
+//            }
+//        }
 
         void setNumberOfChanges(int changes){
             if(changes == 0) {
@@ -117,9 +128,9 @@ class JourneySearchAdapter extends RecyclerView.Adapter<JourneySearchAdapter.Vie
             durationTv.setText(Utils.getDifference(departureTime, arrivalTime));
         }
 
-        void setReminder(){
-            remindAtTv.setText("");
-        }
+        //void setReminder(){
+          //  remindAtTv.setText("");
+        //}
 
         void displayDeleteIcon(boolean display){
             if(!display) deleteBtn.setVisibility(GONE);
@@ -155,15 +166,15 @@ class JourneySearchAdapter extends RecyclerView.Adapter<JourneySearchAdapter.Vie
         String arrivalDateTime = arrivalLeg.getDestination().getScheduledTime();
         holder.setArrival(arrivalStation, arrivalPlatform, Utils.formatTime(arrivalDateTime));
 
-        holder.setRoute(StationUtils.getNameFromStationCode(departureLeg.getOrigin().getStationCode()),
-                StationUtils.getNameFromStationCode(arrivalLeg.getDestination().getStationCode()));
+        //holder.setRoute(StationUtils.getNameFromStationCode(departureLeg.getOrigin().getStationCode()),
+          //      StationUtils.getNameFromStationCode(arrivalLeg.getDestination().getStationCode()));
 
         holder.setDuration(journey.getDepartureDateTime(), journey.getArrivalDateTime());
 
         holder.setNumberOfChanges(journeyLegs.size()-1);
 
         holder.displayDeleteIcon(false);
-        holder.setReminder();
+        //holder.setReminder();
 
     }
 

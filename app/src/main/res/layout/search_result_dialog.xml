@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="16dp">
+
+    <Button
+        android:text="Subscribe"
+        android:layout_width="97dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/subscribeBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/timeSlider"
+         />
+
+    <TextView
+        android:text="Remind me 000 minutes before departure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reminderText"
+        android:layout_alignParentStart="true"
+        android:textSize="17sp"
+        android:layout_alignParentEnd="true"
+        android:padding="8dp" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeSlider"
+        android:layout_below="@+id/reminderText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:padding="8dp"
+        android:max="23"
+        android:progress="3" />
+
+</RelativeLayout>

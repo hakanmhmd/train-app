@@ -24,7 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,6 +32,7 @@ import butterknife.OnClick;
 import retrofit2.Response;
 
 import static android.view.View.GONE;
+import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
 
 
@@ -42,7 +42,7 @@ public class SearchJourneyFragment extends Fragment {
 
     @BindView(R.id.searchFormLayout)
     RelativeLayout searchFormLayout;
-    @BindView(R.id.to_station) // TODO: no correction on these field and change color of cursor
+    @BindView(R.id.to_station)
     AutoCompleteTextView to_station;
     @BindView(R.id.from_station)
     AutoCompleteTextView from_station;
@@ -68,7 +68,6 @@ public class SearchJourneyFragment extends Fragment {
     TextView loadingTvSmall;
     @BindView(R.id.searchResults)
     RecyclerView searchResults;
-
 
     @OnClick(R.id.reverseIcon) void iconPressed() {
         swapSearchInputTextField();
@@ -96,12 +95,10 @@ public class SearchJourneyFragment extends Fragment {
                 android.R.layout.simple_dropdown_item_1line, stations);
 
         // Auto-completion functionality for the two fields
+        to_station.setPaintFlags(INVISIBLE);
+        from_station.setPaintFlags(INVISIBLE);
         to_station.setAdapter(adapter);
         from_station.setAdapter(adapter);
-
-        from_station.setText("London Euston");
-        to_station.setText("Hatfield");
-
 
         searchResults.setHasFixedSize(true);
         searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -116,20 +113,12 @@ public class SearchJourneyFragment extends Fragment {
 
     private void showRecentSearches() {
         ArrayList<RecentSearch> searches = Utils.getSearches(getContext());
-//        List<RecentSearch> list = new ArrayList<>();
-//        for (RecentSearch recentSearch : searches) {
-//            if (recentSearch.getFrom() != null && recentSearch.getTo() != null) {
-//                list.add(recentSearch);
-//            }
-//        }
-//
-//        searches = list.toArray(new RecentSearch[list.size()]);
 
         if(searches == null || searches.size() == 0){
             noRecentSearchTv.setVisibility(View.VISIBLE);
             recentSearches.setVisibility(View.GONE);
         } else {
-            //Log.v(TAG, Arrays.toString(searches));
+            //Log.v(TAG, searches);
             noRecentSearchTv.setVisibility(View.GONE);
             recentSearches.setVisibility(View.VISIBLE);
             recentSearches.setAdapter(new RecentSearchAdapter(searches, getContext(), this));
@@ -187,18 +176,16 @@ public class SearchJourneyFragment extends Fragment {
     }
 
     private void getTrains(String from, String to) {
-        Log.v(TAG, "Making api calls.");
-
         api.getTrains(TrainFinderAPI.buildApiQuery(from, to), new CustomCallback<JourneySearchResponse>() {
             @Override
             public void onSuccess(Response<JourneySearchResponse> response) {
-                Log.d(TAG, "Api call successful!");
+                Log.d(TAG, "API call successful!");
                 showTrains(response.body());
             }
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.d(TAG, "Api call failed!");
+                Log.d(TAG, "API call failed!");
                 showFailMessage();
             }
         });
@@ -216,7 +203,24 @@ public class SearchJourneyFragment extends Fragment {
         LayoutAnimationController animation =
                 AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
         searchResults.setLayoutAnimation(animation);
-        searchResults.setAdapter(new JourneySearchAdapter(results, getContext()));
+        searchResults.setAdapter(new SearchJourneyAdapter(results, getContext(), this));
+    }
+
+    void displayJourneyInfo(final Journey thisJourney){
+        final CustomSearchResultAlertDialog customSearchResultAlertDialog =
+                new CustomSearchResultAlertDialog(getActivity());
+
+        customSearchResultAlertDialog.inflateDialog(thisJourney);
+        customSearchResultAlertDialog.setListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                thisJourney.setReminder(customSearchResultAlertDialog.getReminder());
+                Utils.subscribedToJourney(thisJourney, getContext());
+                customSearchResultAlertDialog.cancel();
+            }
+        });
+
+        customSearchResultAlertDialog.show();
     }
 
     private void showFailMessage() {

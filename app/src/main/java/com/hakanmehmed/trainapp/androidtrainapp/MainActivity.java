@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity  {
 
     private LocationFragment locationFragment;
     private SearchJourneyFragment searchJourneyFragment;
-    private SavedJourneyFragment savedJourneyFragment;
+    private SubscribeJourneyFragment savedJourneyFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity  {
         mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
         locationFragment = new LocationFragment();
         searchJourneyFragment = new SearchJourneyFragment();
-        savedJourneyFragment = new SavedJourneyFragment();
+        savedJourneyFragment = new SubscribeJourneyFragment();
         setFragment(locationFragment);
 
         mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
