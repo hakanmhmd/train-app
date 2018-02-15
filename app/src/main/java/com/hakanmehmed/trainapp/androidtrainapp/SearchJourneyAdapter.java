@@ -93,14 +93,6 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<SearchJourneyAdapter.Vie
             }
         }
 
-//        void setRoute(String origin, String dest){
-//            if(origin != null && dest != null){
-//                routeTv.setText(context.getString(R.string.route, origin, dest));
-//            } else {
-//                routeTv.setText("");
-//            }
-//        }
-
         void setNumberOfChanges(int changes){
             if(changes == 0) {
                 numberOfChangesTv.setText(R.string.no_changes);

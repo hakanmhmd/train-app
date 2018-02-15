@@ -1,8 +1,10 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -70,28 +72,24 @@ public class SubscribeJourneyFragment extends Fragment {
     }
 
     public void deleteJourney(final Journey thisJourney, final int index){
-        final CustomDeleteAlertDialog customSearchResultAlertDialog =
-                new CustomDeleteAlertDialog(getActivity());
-
-        customSearchResultAlertDialog.inflateDialog(thisJourney);
-        customSearchResultAlertDialog.setYesBtnListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.unsubscribeJourney(index, getContext());
-                loadSubscribedJourneys();
-                customSearchResultAlertDialog.cancel();
-            }
-        });
-
-        customSearchResultAlertDialog.setNoBtnListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loadSubscribedJourneys();
-                customSearchResultAlertDialog.cancel();
-            }
-        });
-
-        customSearchResultAlertDialog.show();
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .setTitle("Delete journey")
+                .setMessage(R.string.delete_question_text)
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utils.unsubscribeJourney(index, getContext());
+                        loadSubscribedJourneys();
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog ad = builder.create();
+        ad.show();
     }
 
     public SubscribeJourneyFragment() {

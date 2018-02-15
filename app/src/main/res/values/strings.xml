@@ -33,4 +33,6 @@
     <string name="yes">Yes</string>
     <string name="delete_question_text">Are you sure you want to delete?</string>
     <string name="no">No</string>
+    <string name="cant_proceed">Can not proceed</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

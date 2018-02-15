@@ -31,7 +31,7 @@ class CustomSearchResultAlertDialog {
     CustomSearchResultAlertDialog(FragmentActivity activity) {
         this.activity = activity;
         builder = new AlertDialog.Builder(activity);
-
+        this.builder.setTitle("Subscribe to a journey");
     }
 
     int getReminder(){

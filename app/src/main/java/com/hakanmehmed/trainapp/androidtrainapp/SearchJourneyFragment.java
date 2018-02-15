@@ -1,9 +1,11 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -131,19 +133,18 @@ public class SearchJourneyFragment extends Fragment {
 
         String errorMsg = StationUtils.isInputValid(from, to);
         if(errorMsg != null){
-
             // TODO: pop up dialog instead of toast
-            Toast.makeText(getContext(), errorMsg, Toast.LENGTH_SHORT).show();
-//            new AlertDialog.Builder(getActivity().getApplicationContext())
-//            .setCancelable(false)
-//            .setTitle(getString(R.string.error_text))
-//            .setMessage(errorMsg)
-//            .setPositiveButton(R.string.ok_text, new DialogInterface.OnClickListener() {
-//
-//                public void onClick(DialogInterface dialog, int which) {
-//                    dialog.dismiss();
-//                }
-//            }).show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
+                .setCancelable(false)
+                .setTitle(R.string.cant_proceed)
+                .setMessage(errorMsg)
+                .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+            AlertDialog ad = builder.create();
+            ad.show();
 
             return;
         }
