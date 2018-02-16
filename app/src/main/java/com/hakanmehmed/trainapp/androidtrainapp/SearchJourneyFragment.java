@@ -92,7 +92,7 @@ public class SearchJourneyFragment extends Fragment {
 
         api = new TrainFinderAPI();
 
-        String[] stations = StationUtils.getStations(getContext());
+        String[] stations = StationUtils.getStations();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
                 android.R.layout.simple_dropdown_item_1line, stations);
 

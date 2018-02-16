@@ -39,8 +39,6 @@ public class MainActivity extends AppCompatActivity  {
                         return true;
                     case R.id.nav_search_journey:
                         setFragment(searchJourneyFragment);
-//                        Intent in = new Intent(getBaseContext(), ScheduleActivity.class);
-//                        startActivity(in);
                         return true;
                     case R.id.nav_saved_journey:
                         setFragment(savedJourneyFragment);
@@ -50,6 +48,7 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         });
+        StationUtils.init(getApplicationContext());
 
     }
 

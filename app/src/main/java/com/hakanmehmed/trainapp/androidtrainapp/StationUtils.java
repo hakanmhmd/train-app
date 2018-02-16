@@ -21,11 +21,7 @@ public class StationUtils {
 
     }
 
-    static String[] getStations(Context context){
-        if(stations == null){
-            stations = new HashMap<>();
-            populateMap(context);
-        }
+    static String[] getStations(){
         Set<String> set = stations.keySet();
         Log.v(TAG, String.valueOf(set.size()));
         String[] stationNames = new String[set.size()];
@@ -37,11 +33,7 @@ public class StationUtils {
         return stationNames;
     }
 
-    static String getNameFromStationCode(String code, Context context){
-        if(stations == null){
-            stations = new HashMap<>();
-            populateMap(context);
-        }
+    static String getNameFromStationCode(String code){
         if(stations.containsValue(code)){
             for (String key : stations.keySet()) {
                 if (stations.get(key).equals(code)) {
@@ -58,24 +50,6 @@ public class StationUtils {
             Log.v(TAG, "INVALID STATION");
         }
         return code;
-    }
-
-    private static void populateMap(Context context) {
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(context.getAssets().open("stations.txt")));
-
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(", ");
-                String key = parts[0];
-                String value = parts[1];
-                stations.put(key, value);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     static String isInputValid(String from, String to) {
@@ -96,6 +70,24 @@ public class StationUtils {
 
         return null;
 
+    }
+
+    public static void init(Context applicationContext) {
+        stations = new HashMap<>();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(applicationContext.getAssets().open("stations.txt")));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(", ");
+                String key = parts[0];
+                String value = parts[1];
+                stations.put(key, value);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

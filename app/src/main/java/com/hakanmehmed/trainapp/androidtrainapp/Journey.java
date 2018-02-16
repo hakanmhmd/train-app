@@ -17,10 +17,9 @@ class Journey {
     @SerializedName("legs") private List<JourneyLeg> legs;
     @SerializedName("journeyStatus") private String journeyStatus;
 
-
-
     // used for subscriptions
     private Integer reminder;
+    private int notificationId;
 
     public Journey(Integer id, String origin, String destination, String departureDateTime, String arrivalDateTime, List<JourneyLeg> legs, String journeyStatus) {
         this.id = id;
@@ -89,6 +88,53 @@ class Journey {
         this.journeyStatus = journeyStatus;
     }
 
+    public void setReminder(Integer reminder) {
+        this.reminder = reminder;
+    }
+
+    public Integer getReminder() {
+        return reminder;
+    }
+
+    void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    // TODO: DOUBLE CHECK THIS
+    @Override
+    public boolean equals(Object obj) {
+        Journey other = null;
+        if(obj instanceof Journey){
+            other = (Journey) obj;
+        }
+        if(!this.getDestination().equals(other.getDestination())) return false;
+        if(!this.getOrigin().equals(other.getOrigin())) return false;
+        if(this.getLegs().size() !=  other.getLegs().size()) return false;
+        if(!this.getLegs().get(0).getOrigin().getScheduledTime().equals(other.getLegs().get(0).getOrigin().getScheduledTime())) return false;
+        if(!this.getLegs().get(0).getDestination().getScheduledTime().equals(other.getLegs().get(0).getDestination().getScheduledTime())) return false;
+
+        /* sometimes the platform may be null, so let's check if there is any platform given */
+        for(int i = 0; i < this.getLegs().size(); i++){
+            String originPlatform1 = this.getLegs().get(i).getOrigin().getPlatform();
+            String originPlatform2 = other.getLegs().get(i).getOrigin().getPlatform();
+            if(originPlatform1 != null && originPlatform2 != null){
+                if(!originPlatform1.equals(originPlatform2)) return false;
+            }
+
+            String destinationPlatform1 = this.getLegs().get(i).getDestination().getPlatform();
+            String destinationPlatform2 = other.getLegs().get(i).getDestination().getPlatform();
+            if(destinationPlatform1 != null && destinationPlatform2 != null){
+                if(!destinationPlatform1.equals(destinationPlatform2)) return false;
+            }
+        }
+
+        return true;
+    }
+
     @Override
     public String toString() {
         return "Journey{" +
@@ -100,12 +146,5 @@ class Journey {
                 ", legs=" + legs +
                 ", journeyStatus='" + journeyStatus + '\'' +
                 '}';
-    }
-
-    public void setReminder(int reminder) {
-        this.reminder = reminder;
-    }
-    public Integer getReminder() {
-        return reminder;
     }
 }

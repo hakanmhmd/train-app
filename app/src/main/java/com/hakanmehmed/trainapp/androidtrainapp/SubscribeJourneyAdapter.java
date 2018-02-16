@@ -1,6 +1,8 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -135,8 +137,27 @@ class SubscribeJourneyAdapter extends RecyclerView.Adapter<SubscribeJourneyAdapt
 
     }
 
-    private void removeJourney(int adapterPosition) {
-        fragment.deleteJourney(journeys.get(adapterPosition), adapterPosition);
+    private void removeJourney(final int adapterPosition) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
+                .setCancelable(false)
+                .setTitle("Delete journey")
+                .setMessage(R.string.delete_question_text)
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        fragment.deleteJourney(adapterPosition);
+                        journeys.remove(adapterPosition);
+                        notifyItemRemoved(adapterPosition);
+                        notifyDataSetChanged();
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog ad = builder.create();
+        ad.show();
     }
 
     public SubscribeJourneyAdapter(List<Journey> journeys, Context context, SubscribeJourneyFragment savedJourneyFragment) {
@@ -172,8 +193,8 @@ class SubscribeJourneyAdapter extends RecyclerView.Adapter<SubscribeJourneyAdapt
         String arrivalDateTime = arrivalLeg.getDestination().getScheduledTime();
         holder.setArrival(arrivalStation, arrivalPlatform, Utils.formatTime(arrivalDateTime));
 
-        holder.setRoute(StationUtils.getNameFromStationCode(departureLeg.getOrigin().getStationCode(), context),
-              StationUtils.getNameFromStationCode(arrivalLeg.getDestination().getStationCode(), context));
+        holder.setRoute(StationUtils.getNameFromStationCode(departureLeg.getOrigin().getStationCode()),
+              StationUtils.getNameFromStationCode(arrivalLeg.getDestination().getStationCode()));
 
         holder.setDuration(journey.getDepartureDateTime(), journey.getArrivalDateTime());
         holder.setNumberOfChanges(journeyLegs.size()-1);

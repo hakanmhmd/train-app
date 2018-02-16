@@ -71,25 +71,8 @@ public class SubscribeJourneyFragment extends Fragment {
         subscribedJourneys.setAdapter(new SubscribeJourneyAdapter(journeys, getContext(), this));
     }
 
-    public void deleteJourney(final Journey thisJourney, final int index){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setCancelable(false)
-                .setTitle("Delete journey")
-                .setMessage(R.string.delete_question_text)
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        Utils.unsubscribeJourney(index, getContext());
-                        loadSubscribedJourneys();
-                        dialog.dismiss();
-                    }
-                });
-        AlertDialog ad = builder.create();
-        ad.show();
+    public void deleteJourney(final int index){
+        Utils.unsubscribeJourney(index, getContext());
     }
 
     public SubscribeJourneyFragment() {
