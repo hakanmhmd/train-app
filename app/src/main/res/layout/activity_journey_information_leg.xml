@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="12dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:padding="12dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/live_circle"
+                android:id="@+id/green_circle"
+                android:layout_toEndOf="@+id/legDepartureStatusTv"
+                android:layout_above="@+id/legOperatingCompanyTv"
+                android:layout_below="@+id/legDepartureTv"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:text="00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkGray"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_alignParentTop="true"
+                android:id="@+id/legDepartureTv"
+                android:paddingStart="0dp"
+                android:paddingEnd="24dp"
+                android:textAlignment="viewStart" />
+
+            <TextView
+                android:text="On time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/legArrivalTv"
+                android:layout_alignParentStart="true"
+                android:id="@+id/legArrivalStatus"
+                android:textColor="@color/colorDarkGray"
+                android:textSize="14sp"
+                android:layout_toStartOf="@+id/legDeparuteStationTv"
+                android:textAlignment="viewStart" />
+
+            <TextView
+                android:text="Virgin Trains"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legOperatingCompanyTv"
+                android:layout_below="@+id/legCurrentStationTv"
+                android:layout_alignStart="@+id/legDeparuteStationTv" />
+
+            <TextView
+                android:text="Platform 0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legDeparturePlatformTv"
+                android:layout_below="@+id/legOperatingCompanyTv"
+                android:layout_alignStart="@+id/legOperatingCompanyTv" />
+
+            <TextView
+                android:text="000 minutes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legDurationTv"
+                android:layout_below="@+id/legDeparturePlatformTv"
+                android:layout_alignStart="@+id/legDeparturePlatformTv" />
+
+            <TextView
+                android:text="00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorDarkGray"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:id="@+id/legArrivalTv"
+                android:paddingEnd="12dp"
+                android:paddingStart="0dp"
+                android:textAlignment="viewStart"
+                android:layout_below="@+id/legDurationTv"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="12dp" />
+
+            <TextView
+                android:text="On time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legDepartureStatusTv"
+                android:textColor="@color/colorDarkGray"
+                android:textSize="14sp"
+                android:textAlignment="viewStart"
+                android:layout_below="@+id/legDepartureTv"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/legDeparuteStationTv" />
+
+            <TextView
+                android:text="Hatfield"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legDeparuteStationTv"
+                android:textSize="20sp"
+                android:textColor="@color/colorDarkGray"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_toEndOf="@+id/legDepartureTv" />
+
+            <TextView
+                android:text="London Euston"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legArrivalStationTv"
+                android:textSize="20sp"
+                android:textColor="@color/colorDarkGray"
+                android:layout_alignBaseline="@+id/legArrivalTv"
+                android:layout_alignBottom="@+id/legArrivalTv"
+                android:layout_alignStart="@+id/legDurationTv" />
+
+            <TextView
+                android:text="Currently at Kings Cross"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/legCurrentStationTv"
+                android:textSize="16sp"
+                android:layout_below="@+id/legDeparuteStationTv"
+                android:layout_toEndOf="@+id/green_circle" />
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

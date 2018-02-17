@@ -46,11 +46,6 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <!--<service-->
-            <!--android:name=".NotificationService"-->
-            <!--android:enabled="true"-->
-            <!--android:exported="false" />-->
-
         <receiver
             android:name=".NotificationReceiver"
             android:enabled="true"
@@ -60,7 +55,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".JourneyInformationActivity" />
+        <activity android:name=".JourneyInformationActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask"/>
     </application>
 
 </manifest>

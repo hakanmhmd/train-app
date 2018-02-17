@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/journeyInfoLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".JourneyInformationActivity"
     android:weightSum="1">
 
@@ -42,11 +42,11 @@
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@+id/journeyLegsRv"
         android:layout_below="@+id/delimiter"
         android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
 

@@ -43,6 +43,22 @@ public class JourneyInformationActivity extends AppCompatActivity {
         Journey journey = Utils.jsonToJourney(getIntent().getStringExtra("journey"));
         getLiveDataFeed(journey);
 
+        String departStation = StationUtils.getNameFromStationCode(journey.getOrigin());
+        String arriveStation = StationUtils.getNameFromStationCode(journey.getDestination());
+        journeyStationsTv.setText(getString(R.string.route, departStation, arriveStation));
+
+        String duration = Utils.getTimeDifference(journey.getArrivalDateTime(), journey.getDepartureDateTime());
+
+        Log.v(TAG, duration);
+        int changes = journey.getLegs().size() - 1;
+        if(changes == 0){
+            journeyDetailsTv.setText(duration + ", " + getString(R.string.no_changes));
+        } else if(changes == 1) {
+            journeyDetailsTv.setText(duration + ", " + getString(R.string.one_change));
+        } else {
+            journeyDetailsTv.setText(duration + ", " + getString(R.string.more_changes, changes));
+        }
+
         journeyLegsRv.setHasFixedSize(true);
         journeyLegsRv.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
@@ -59,7 +75,7 @@ public class JourneyInformationActivity extends AppCompatActivity {
         for(JourneyLeg leg : journey.getLegs()){
 
             final String trainId = leg.getTrainId();
-            Log.v(TAG, "Leg " + leg.getTrainId());
+            Log.v(TAG, "LegViewer " + leg.getTrainId());
 
             if(leg.getTransportMode().equals("Walk") || trainId == null){
                 liveDataSearchResponses.add(null);

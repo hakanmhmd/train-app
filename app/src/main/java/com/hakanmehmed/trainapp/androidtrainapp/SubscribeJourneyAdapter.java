@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -116,7 +115,7 @@ class SubscribeJourneyAdapter extends RecyclerView.Adapter<SubscribeJourneyAdapt
         }
 
         void setDuration(String departureTime, String arrivalTime){
-            durationTv.setText(Utils.getDifference(departureTime, arrivalTime));
+            durationTv.setText(Utils.getDuration(departureTime, arrivalTime));
         }
 
         void setReminder(String departureDateTime, int reminder){

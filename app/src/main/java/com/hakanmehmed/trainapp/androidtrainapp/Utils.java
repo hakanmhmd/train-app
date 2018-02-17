@@ -48,7 +48,7 @@ public class Utils {
         return df.format(Calendar.getInstance().getTime());
     }
 
-    static String getDifference(String departureTime, String arrivalTime) {
+    static String getDuration(String departureTime, String arrivalTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
             Date departureDate = format.parse(departureTime);
@@ -69,7 +69,7 @@ public class Utils {
         }
     }
 
-    static String getTimeDifference(String departureTime, String arrivalTime) {
+    static String getTimeDifference(String arrivalTime, String departureTime) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         if(departureTime == null || arrivalTime == null) return "";
         try {
@@ -97,11 +97,12 @@ public class Utils {
 
             return delayText;
         } catch(ParseException e){
+            Log.v(TAG, "Could not parse");
             return "";
         }
     }
 
-    public static String getDepartTime(Origin origin){
+    static String getDepartTime(Origin origin){
         if(origin.getRealTime() == null) {
             return origin.getScheduledTime();
         } else {
@@ -109,11 +110,19 @@ public class Utils {
         }
     }
 
-    public static String journeyToJson(Journey j){
+    static String getArriveTime(Destination destination){
+        if(destination.getRealTime() == null) {
+            return destination.getScheduledTime();
+        } else {
+            return destination.getRealTime();
+        }
+    }
+
+    static String journeyToJson(Journey j){
         return new Gson().toJson(j);
     }
 
-    public static Journey jsonToJourney(String json){
+    static Journey jsonToJourney(String json){
         return new Gson().fromJson(json, Journey.class);
     }
 

@@ -162,7 +162,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentIntent(pendingIntent)
                 .setSmallIcon(R.drawable.ic_train_24dp)
-                //.addAction(R.drawable.ic_close_48px, "Dismiss", dismissPendingIntent)
                 .setContentTitle("Train to " + StationUtils.getNameFromStationCode(journey.getDestination()))
                 .setContentText(text.toString())
                 .setSubText(journey.getOrigin() + " to " + journey.getDestination())
@@ -174,10 +173,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         if(lastStatus == null || !lastStatus.equals(text.toString())){
             builder.setVibrate(new long[] { 0, 250, 500, 250 });
             journeyStatus.put(savedJourneyId, text.toString());
+
+            // send notification if there is any change of schedule
+            notificationManager.notify(journey.getNotificationId(), builder.build());
         }
-
-        notificationManager.notify(journey.getNotificationId(), builder.build());
-
-
     }
 }
