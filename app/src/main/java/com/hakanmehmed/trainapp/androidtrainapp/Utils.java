@@ -28,16 +28,19 @@ import static android.content.Context.MODE_PRIVATE;
 public class Utils {
     private static final String TAG = "Utils";
 
-    static String formatTime(String time) {
+    static String formatTime(String time){
         Date date;
-        try {
+        try{
             date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(time);
-        } catch (ParseException e) {
+        } catch(ParseException e){
             e.printStackTrace();
             return null;
         }
 
-        return new SimpleDateFormat("HH:mm").format(date);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+
+        return new SimpleDateFormat("HH:mm").format(cal.getTime());
     }
 
     static String getCurrentTime(){
@@ -96,6 +99,14 @@ public class Utils {
         } catch(ParseException e){
             return "";
         }
+    }
+
+    public static String journeyToJson(Journey j){
+        return new Gson().toJson(j);
+    }
+
+    public static Journey jsonToJourney(String json){
+        return new Gson().fromJson(json, Journey.class);
     }
 
     // ----------------- SUBSCRIBED JOURNEYS ------------------------
@@ -160,9 +171,6 @@ public class Utils {
         }
     }
 
-    private static String journeyToJson(Journey j){
-        return new Gson().toJson(j);
-    }
 
     public static ArrayList<Journey> getSubscribedJourneys(Context context){
         SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
@@ -192,9 +200,7 @@ public class Utils {
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
-
     }
-
 
     // ----------------- RECENT SEARCHES -----------------------------
     static void saveSearch(String from, String to, Context context){
