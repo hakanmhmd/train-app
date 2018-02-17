@@ -46,18 +46,17 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <service
-            android:name=".NotificationService"
-            android:enabled="true"
-            android:exported="false" />
+        <!--<service-->
+            <!--android:name=".NotificationService"-->
+            <!--android:enabled="true"-->
+            <!--android:exported="false" />-->
 
         <receiver
             android:name=".NotificationReceiver"
-            android:enabled="true">
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
-                <action android:name="android.intent.action.TIME_SET" />
             </intent-filter>
         </receiver>
 

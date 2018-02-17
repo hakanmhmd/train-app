@@ -139,12 +139,14 @@ class Journey {
     public String toString() {
         return "Journey{" +
                 "id=" + id +
+                ", notificationId=" + notificationId +
                 ", origin='" + origin + '\'' +
                 ", destination='" + destination + '\'' +
                 ", departureDateTime='" + departureDateTime + '\'' +
                 ", arrivalDateTime='" + arrivalDateTime + '\'' +
                 ", legs=" + legs +
                 ", journeyStatus='" + journeyStatus + '\'' +
+                ", reminder=" + reminder +
                 '}';
     }
 }

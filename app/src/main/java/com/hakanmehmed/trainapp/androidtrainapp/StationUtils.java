@@ -23,7 +23,6 @@ public class StationUtils {
 
     static String[] getStations(){
         Set<String> set = stations.keySet();
-        Log.v(TAG, String.valueOf(set.size()));
         String[] stationNames = new String[set.size()];
 
         int i=0;

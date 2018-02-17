@@ -73,6 +73,8 @@ public class SubscribeJourneyFragment extends Fragment {
 
     public void deleteJourney(final int index){
         Utils.unsubscribeJourney(index, getContext());
+        ArrayList<Journey> journeys = Utils.getSubscribedJourneys(getContext());
+        if(journeys.size() == 0) loadSubscribedJourneys();
     }
 
     public SubscribeJourneyFragment() {

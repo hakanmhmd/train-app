@@ -1,11 +1,14 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
@@ -32,9 +35,9 @@ public class NotificationReceiver extends BroadcastReceiver {
         if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())){
             ArrayList<Journey> journeys = Utils.getSubscribedJourneys(context);
             for(int i = 0; i < journeys.size(); i++){
-                Utils.setupSubscription(journeys.get(i), context);
+                Utils.setupAfterBoot(journeys.get(i), context);
             }
-            Log.v(TAG, "onRecieve ACTION_BOOT_COMPLETED");
+            Log.v(TAG, "Reboot setup.");
         } else {
 //            Intent serviceIntent = new Intent(context, NotificationService.class);
 //            Log.v(TAG, "onRecieve sevriceIntent");
@@ -42,18 +45,37 @@ public class NotificationReceiver extends BroadcastReceiver {
 //            serviceIntent.putExtra("dismiss", intent.getBooleanExtra("dismiss", false));
 //
 //            startWakefulService(context, serviceIntent);
+            // TODO: API 18 makes notifications exact - decide what to use
+            NotificationManager notificationManager =
+                    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent moreDetailsIntent = new Intent(context, JourneyInformationActivity.class);
+            moreDetailsIntent.setAction(Long.toString(System.currentTimeMillis()));
 
-            Log.v(TAG, "onRecevie");
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-            Intent repAct = new Intent(context, JourneyInformationActivity.class);
-            repAct.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-            String strObj = intent.getStringExtra("journey");
+            String strObj = intent.getExtras().getString("journey");
             Journey journey = new Gson().fromJson(strObj, Journey.class);
             Log.v(TAG, "CHECK : " + journey.toString());
+            Boolean unsub = intent.getExtras().getBoolean("unsubscribe");
+            if(unsub){
+                PendingIntent pendingIntent = PendingIntent.getActivity(context, journey.getNotificationId(),
+                        new Intent(), PendingIntent.FLAG_UPDATE_CURRENT);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+                        //.setContentIntent(pendingIntent)
+                        .setSmallIcon(R.drawable.ic_train_24dp)
+                        .setContentTitle("Unsubscription")
+                        .setContentText("Unsubscribed to journey :" + journey.getOrigin() + " to " + journey.getDestination())
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setAutoCancel(true);
+
+                notificationManager.notify(journey.getNotificationId(), builder.build());
+                notificationManager.cancel(journey.getNotificationId());
+                return;
+            }
 
             PendingIntent pendingIntent = PendingIntent.getActivity(context, journey.getNotificationId(),
-                    repAct, PendingIntent.FLAG_UPDATE_CURRENT);
+                    moreDetailsIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                     .setContentIntent(pendingIntent)
@@ -61,7 +83,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .setContentTitle("Train to " + StationUtils.getNameFromStationCode(journey.getDestination()))
                     .setContentText("SOME TEXT HERE")
                     .setSubText(journey.getOrigin() + " to " + journey.getDestination())
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setPriority(NotificationCompat.PRIORITY_MAX)
+                    .setDefaults(Notification.DEFAULT_ALL)
                     .setAutoCancel(true);
 
             notificationManager.notify(journey.getNotificationId(), builder.build());

@@ -144,4 +144,21 @@ class JourneyLeg {
     public void setCancelled(Boolean cancelled) {
         isCancelled = cancelled;
     }
+
+
+    @Override
+    public String toString() {
+        return "JourneyLeg{" +
+                "id=" + id +
+                ", origin=" + origin +
+                ", destination=" + destination +
+                ", transportMode='" + transportMode + '\'' +
+                ", reservationFlag='" + reservationFlag + '\'' +
+                ", trainId='" + trainId + '\'' +
+                ", serviceProviderCode='" + serviceProviderCode + '\'' +
+                ", serviceProviderName='" + serviceProviderName + '\'' +
+                ", seatingClass='" + seatingClass + '\'' +
+                ", isCancelled=" + isCancelled +
+                '}';
+    }
 }

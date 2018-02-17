@@ -1,6 +1,7 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.app.AlarmManager;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -102,22 +103,33 @@ public class Utils {
     public static void subscribedToJourney(Journey journey, Context context){
         SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         /* generate a random id to associate with the journey for alarms and notifications */
-        int rand = (int) (Math.random() * 1000000);
+        //int rand = (int) (Math.random() * 1000000);
+        int rand = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
         journey.setNotificationId(rand);
         android.util.Log.v(TAG, "Generated unique random id: " + rand);
 
-        // TODO : ADD if not added before
         ArrayList<Journey> currentSubscribedJourneys = getSubscribedJourneys(context);
-        currentSubscribedJourneys.add(0, journey);
-
+        if(!currentSubscribedJourneys.contains(journey)) {
+            currentSubscribedJourneys.add(0, journey);
+        } else {
+            int index = currentSubscribedJourneys.indexOf(journey);
+            currentSubscribedJourneys.remove(index);
+            currentSubscribedJourneys.add(0, journey);
+        }
         prefs.edit().putString("subscribed_journeys", new Gson().toJson(currentSubscribedJourneys)).apply();
         setupSubscription(journey, context);
     }
 
+    public static void setupAfterBoot(Journey journey, Context context){
+        int rand = (int) (Math.random() * 1000000);
+        journey.setNotificationId(rand);
+        setupSubscription(journey, context);
+    }
+
     public static void setupSubscription(Journey journey, Context context){
-        Intent intent = new Intent(context, NotificationReceiver.class);
+        Intent intent = new Intent(context.getApplicationContext(), NotificationReceiver.class);
         intent.putExtra("journey", journeyToJson(journey));
-        intent.putExtra("dismiss", false);
+        intent.putExtra("unsubscribe", false);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, journey.getNotificationId(),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -126,13 +138,22 @@ public class Utils {
 
         try {
             Date departTime = simpleDateFormat.parse(scheduledDepartureTime);
+            Log.v(TAG, departTime.toString());
             Calendar c = Calendar.getInstance();
             c.setTime(departTime);
-            c.add(Calendar.MINUTE, -journey.getReminder());
+            c.set(Calendar.HOUR_OF_DAY, c.get(Calendar.HOUR_OF_DAY));
+            c.set(Calendar.MINUTE, c.get(Calendar.MINUTE) - journey.getReminder());
+            c.set(Calendar.SECOND, c.get(Calendar.SECOND));
+
+            Log.v(TAG, c.get(Calendar.HOUR_OF_DAY) + " " + c.get(Calendar.MINUTE) + " " + c.get(Calendar.SECOND));
+            //c.add(Calendar.MINUTE, -journey.getReminder());
+            //c.set(Calendar.HOUR_OF_DAY, 22);
+            ///c.set(Calendar.MINUTE, journey.getReminder());
+            //c.set(Calendar.SECOND, 10);
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             // will trigger even if device goes to sleep mode
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), 120000L, pendingIntent);
             Log.v(TAG, "Notification is setup.");
         } catch(ParseException e){
             e.printStackTrace();
@@ -151,7 +172,7 @@ public class Utils {
 
     public static void unsubscribeJourney(int index, Context context) {
         ArrayList<Journey> journeys = getSubscribedJourneys(context);
-        //TODO: removeSubscription(journeys.get(index), context);
+        removeSubscription(journeys.get(index), context);
         SharedPreferences prefs = context.getSharedPreferences("prefs", MODE_PRIVATE);
         journeys.remove(index);
 
@@ -161,16 +182,17 @@ public class Utils {
     public static void removeSubscription(Journey journey, Context context){
         Intent intent = new Intent(context.getApplicationContext(), NotificationReceiver.class);
         intent.putExtra("journey", journeyToJson(journey));
-        intent.putExtra("dismiss", true);
+        intent.putExtra("unsubscribe", true);
 
         context.sendBroadcast(intent);
+        Log.v(TAG, "Remove notification with id " + String.valueOf(journey.getId()));
 
-        Log.v(TAG, "Remove notification with id" + String.valueOf(journey.getId()));
-
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, journey.getId(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, journey.getNotificationId(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
+
     }
 
 
