@@ -101,6 +101,14 @@ public class Utils {
         }
     }
 
+    public static String getDepartTime(Origin origin){
+        if(origin.getRealTime() == null) {
+            return origin.getScheduledTime();
+        } else {
+            return origin.getRealTime();
+        }
+    }
+
     public static String journeyToJson(Journey j){
         return new Gson().toJson(j);
     }

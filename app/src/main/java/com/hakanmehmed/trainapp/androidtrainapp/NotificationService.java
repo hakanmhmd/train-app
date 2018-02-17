@@ -38,7 +38,7 @@ public class NotificationService extends Service{
     private final long updateInterval = 20000;
     private final Handler handler = new Handler();
 
-    private final TrainFinderAPI api = new TrainFinderAPI();
+    private final JourneyFinderApi api = new JourneyFinderApi();
     private final HashMap<Integer, Journey> journeys = new HashMap<>();
 
     private final HashMap<Integer, String> notificationText = new HashMap<>();
@@ -82,7 +82,7 @@ public class NotificationService extends Service{
         Log.d(TAG, "Updating notification for #" + String.valueOf(savedJourney.getNotificationId()));
 
         /* create the query for the journey we want to check on */
-        ApiQuery query = TrainFinderAPI.buildApiQuery(
+        ApiQuery query = JourneyFinderApi.buildApiQuery(
                 StationUtils.getNameFromStationCode(savedJourney.getOrigin()),
                 StationUtils.getNameFromStationCode(savedJourney.getDestination()));
 
@@ -101,7 +101,7 @@ public class NotificationService extends Service{
         Log.d(TAG, "Making JourneyData request to update the notification");
 
         /* execute the query, callback will handle response */
-        api.getTrains(query, new CustomCallback<JourneySearchResponse>() {
+        api.getJourneys(query, new CustomCallback<JourneySearchResponse>() {
             @Override
             public void onSuccess (Response<JourneySearchResponse> response) {
                 List<Journey> journeys = response.body().getJourneys();
@@ -171,7 +171,7 @@ public class NotificationService extends Service{
             String delay = Utils.getTimeDifference(leg.getOrigin().getRealTime(), leg.getOrigin().getScheduledTime());
             if(!delay.equals("")){
                 String prefix = "Train from " + leg.getOrigin().getStationCode() + " is delayed by ";
-                String suffix = " (exp. " + formatTime(getDepartTime(leg.getOrigin())) + ")";
+               String suffix = " (exp.  )";
                 text += prefix + delay + suffix;
             }
         }
@@ -234,14 +234,6 @@ public class NotificationService extends Service{
         cal.setTime(date);
 
         return new SimpleDateFormat("HH:mm").format(cal.getTime());
-    }
-
-    public static String getDepartTime(Origin origin){
-        if(origin.getRealTime() == null) {
-            return origin.getScheduledTime();
-        } else {
-            return origin.getRealTime();
-        }
     }
 
     private String journeyToJson(Journey j){

@@ -23,7 +23,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +78,7 @@ public class SearchJourneyFragment extends Fragment {
         findTrains();
     }
 
-    private TrainFinderAPI api;
+    private JourneyFinderApi api;
     private View view;
 
     @Override
@@ -90,7 +89,7 @@ public class SearchJourneyFragment extends Fragment {
 
         ButterKnife.bind(this, view);
 
-        api = new TrainFinderAPI();
+        api = new JourneyFinderApi();
 
         String[] stations = StationUtils.getStations();
         ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
@@ -177,7 +176,7 @@ public class SearchJourneyFragment extends Fragment {
     }
 
     private void getTrains(String from, String to) {
-        api.getTrains(TrainFinderAPI.buildApiQuery(from, to), new CustomCallback<JourneySearchResponse>() {
+        api.getJourneys(JourneyFinderApi.buildApiQuery(from, to), new CustomCallback<JourneySearchResponse>() {
             @Override
             public void onSuccess(Response<JourneySearchResponse> response) {
                 Log.d(TAG, "API call successful!");

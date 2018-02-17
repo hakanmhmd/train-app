@@ -1,9 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/journeyInfoLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.hakanmehmed.trainapp.androidtrainapp.JourneyInformationActivity">
+    tools:context=".JourneyInformationActivity"
+    android:weightSum="1">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:text="Hatfield to London Euston"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/journeyStationsTv"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:textSize="18sp"
+        android:paddingStart="12dp"
+        android:paddingEnd="0dp"
+        android:paddingTop="12dp"
+        android:layout_alignEnd="@+id/journeyDetailsTv" />
+
+    <TextView
+        android:text="0 hour 00 minutes, 0 changes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/journeyDetailsTv"
+        android:layout_below="@+id/journeyStationsTv"
+        android:layout_alignParentStart="true"
+        android:paddingStart="12dp"
+        android:paddingEnd="0dp"
+        android:layout_alignEnd="@+id/delimiter" />
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@android:color/darker_gray"
+        android:layout_below="@+id/journeyDetailsTv"
+        android:layout_alignParentStart="true"
+        android:id="@+id/delimiter"
+        android:layout_margin="12dp"
+        android:layout_height="2dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/journeyLegsRv"
+        android:layout_below="@+id/delimiter"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
+

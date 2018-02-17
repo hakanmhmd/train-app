@@ -10,15 +10,11 @@ import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.gson.Gson;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Response;
-
-import static com.hakanmehmed.trainapp.androidtrainapp.NotificationService.getDepartTime;
 
 /**
  * Created by hakanmehmed on 15/02/2018.
@@ -28,14 +24,11 @@ public class NotificationReceiver extends BroadcastReceiver {
     private static final String TAG = "NotificationReceiver";
 
     private NotificationManager notificationManager;
-    private final long updateInterval = 20000;
+    private final long interval = 60000;
     private final Handler handler = new Handler();
-
-    private final TrainFinderAPI api = new TrainFinderAPI();
-    private final HashMap<Integer, Journey> subscribed = new HashMap<>();
-
-    // uses journey ids to track notification text
-    private final HashMap<Integer, String> journeyStatus = new HashMap<>();
+    private final JourneyFinderApi api = new JourneyFinderApi();
+    private final HashMap<Integer, Journey> subscribed = new HashMap<>(); // track journeys
+    private final HashMap<Integer, String> journeyStatus = new HashMap<>(); // track notification text
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -46,16 +39,9 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
             Log.v(TAG, "Reboot setup.");
         } else {
-//            Intent serviceIntent = new Intent(context, NotificationService.class);
-//            Log.v(TAG, "onRecieve sevriceIntent");
-//            serviceIntent.putExtra("journey", intent.getStringExtra("journey"));
-//            serviceIntent.putExtra("dismiss", intent.getBooleanExtra("dismiss", false));
-//
-//            startWakefulService(context, serviceIntent);
             // TODO: API 18 makes notifications exact - decide what to use
             if(notificationManager == null) {
-                notificationManager =
-                        (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             }
 
             String json = intent.getExtras().getString("journey");
@@ -65,10 +51,13 @@ public class NotificationReceiver extends BroadcastReceiver {
             Log.v(TAG, "CHECK : " + journey.toString());
             Boolean unsubscribe = intent.getExtras().getBoolean("unsubscribe");
             if(unsubscribe){
+                subscribed.remove(journey.getNotificationId());
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_train_24dp)
-                        .setContentTitle("Unsubscription")
-                        .setContentText("Unsubscribed to journey :" + journey.getOrigin() + " to " + journey.getDestination())
+                        .setContentTitle("Unsubscribe")
+                        .setContentText("Unsubscribed from journey :" + journey.getOrigin() +
+                                " to " + journey.getDestination() +
+                                " at " + journey.getLegs().get(0).getOrigin().getScheduledTime())
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setAutoCancel(true);
@@ -80,7 +69,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             subscribed.put(journey.getNotificationId(), journey);
 
-            ApiQuery query = TrainFinderAPI.buildApiQuery(
+            ApiQuery query = JourneyFinderApi.buildApiQuery(
                     StationUtils.getNameFromStationCode(journey.getOrigin()),
                     StationUtils.getNameFromStationCode(journey.getDestination()));
 
@@ -94,7 +83,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
         Log.v(TAG, "Making API calls");
 
-        api.getTrains(query, new CustomCallback<JourneySearchResponse>() {
+        api.getJourneys(query, new CustomCallback<JourneySearchResponse>() {
             @Override
             public void onSuccess (Response<JourneySearchResponse> response) {
                 List<Journey> journeys = response.body().getJourneys();
@@ -103,7 +92,12 @@ public class NotificationReceiver extends BroadcastReceiver {
                     if(j.equals(journey)){
                         Log.v(TAG, "FOUND ITTTTTTT");
                         buildNotification(j, journey.getNotificationId(), context);
-                        remindAgain(query, journey);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                startReminder(query, journey, context);
+                            }
+                        }, interval);
                         break;
                     }
                 }
@@ -111,13 +105,15 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             @Override
             public void onFailure(Throwable t) {
-                remindAgain(query, journey);
+                // try again after some time
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startReminder(query, journey, context);
+                    }
+                }, interval);
             }
         });
-    }
-
-    private void remindAgain(final ApiQuery query, final Journey savedJourney){
-
     }
 
     private void buildNotification(final Journey journey, int savedJourneyId, Context context){
@@ -146,7 +142,7 @@ public class NotificationReceiver extends BroadcastReceiver {
             String delay = Utils.getTimeDifference(leg.getOrigin().getRealTime(), leg.getOrigin().getScheduledTime());
             if(!delay.equals("")){
                 String prefix = "Train from " + leg.getOrigin().getStationCode() + " is delayed by ";
-                String suffix = " (exp. " + Utils.formatTime(getDepartTime(leg.getOrigin())) + ")";
+                String suffix = " (exp. " + Utils.formatTime(Utils.getDepartTime(leg.getOrigin())) + ")";
                 text.append(prefix).append(delay).append(suffix);
             }
         }

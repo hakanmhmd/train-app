@@ -1,5 +1,8 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -13,11 +16,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Finds journeys
  */
 
-public class TrainFinderAPI {
-    private static final String TAG = "TrainFinderAPI";
+public class JourneyFinderApi {
+    private static final String TAG = "JourneyFinderApi";
     private static final String API_BASE_URL = "https://api.thetrainline.com";
 
-    public TrainFinderAPI() {
+    public JourneyFinderApi() {
     }
 
     private final HttpLoggingInterceptor logging =
@@ -33,7 +36,7 @@ public class TrainFinderAPI {
     private final Retrofit retrofit = builder.build();
     private final APIClient apiClient = retrofit.create(APIClient.class);
 
-    void getTrains(ApiQuery apiQuery, final CustomCallback<JourneySearchResponse> callback){
+    void getJourneys(ApiQuery apiQuery, final CustomCallback<JourneySearchResponse> callback){
         Call<JourneySearchResponse> call = apiClient.getJourneys(apiQuery);
 
         call.enqueue(new Callback<JourneySearchResponse>() {
