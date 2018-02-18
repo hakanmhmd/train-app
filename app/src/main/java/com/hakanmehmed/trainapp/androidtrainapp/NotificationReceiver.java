@@ -170,6 +170,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         String lastStatus = journeyStatus.get(savedJourneyId);
+        //TODO does this work
         if(lastStatus == null || !lastStatus.equals(text.toString())){
             builder.setVibrate(new long[] { 0, 250, 500, 250 });
             journeyStatus.put(savedJourneyId, text.toString());
