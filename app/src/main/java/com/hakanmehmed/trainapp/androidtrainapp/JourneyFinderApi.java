@@ -52,14 +52,14 @@ public class JourneyFinderApi {
         });
     }
 
-    static ApiQuery buildApiQuery(String from, String to){
+    static ApiQuery buildApiQuery(String from, String to, String time){
         String fromCode = StationUtils.getCodeFromStationName(from);
         String toCode = StationUtils.getCodeFromStationName(to);
         int adults = 1;
         int children = 0;
         String journeyType = "Single";
         boolean showCancelled = true;
-        OutboundJourney outboundJourney = new OutboundJourney(Utils.getCurrentTime(), "LeaveAfter");
+        OutboundJourney outboundJourney = new OutboundJourney(time, "LeaveAfter");
 
         ApiQuery q = new ApiQuery(adults, children, fromCode, toCode, journeyType, showCancelled);
         q.setOutboundJourney(outboundJourney);

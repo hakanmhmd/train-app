@@ -71,7 +71,8 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             ApiQuery query = JourneyFinderApi.buildApiQuery(
                     StationUtils.getNameFromStationCode(journey.getOrigin()),
-                    StationUtils.getNameFromStationCode(journey.getDestination()));
+                    StationUtils.getNameFromStationCode(journey.getDestination()),
+                    Utils.getCurrentTime());
 
             startReminder(query, journey, context);
         }

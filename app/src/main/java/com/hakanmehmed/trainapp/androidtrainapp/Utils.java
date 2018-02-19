@@ -48,27 +48,6 @@ public class Utils {
         return df.format(Calendar.getInstance().getTime());
     }
 
-    static String getDuration(String departureTime, String arrivalTime) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        try {
-            Date departureDate = format.parse(departureTime);
-            Date arrivalDate = format.parse(arrivalTime);
-
-            long difference = arrivalDate.getTime() - departureDate.getTime();
-
-            long hours = TimeUnit.MILLISECONDS.toHours(difference);
-            long minutes = TimeUnit.MILLISECONDS.toMinutes(difference) -
-                    TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(difference));
-
-            return (hours > 0 ? hours + "h " : "") + minutes + "m";
-
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
     static String getTimeDifference(String time1String, String time2String, boolean shorten) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         if(time2String == null || time1String == null) return "";

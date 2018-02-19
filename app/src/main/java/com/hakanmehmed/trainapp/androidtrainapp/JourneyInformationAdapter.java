@@ -78,8 +78,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView legArrivalTv;
         @BindView(R.id.legDepartureStatusTv)
         TextView legDepartureStatusTv;
-        @BindView(R.id.legDeparuteStationTv)
-        TextView legDeparuteStationTv;
+        @BindView(R.id.legDepartureStationTv)
+        TextView legDepartureStationTv;
         @BindView(R.id.legArrivalStationTv)
         TextView legArrivalStationTv;
         @BindView(R.id.legCurrentStationTv)
@@ -102,7 +102,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         public void setDeparture(String time, String station, String platform){
             legDepartureTv.setText(time);
-            legDeparuteStationTv.setText(StationUtils.getNameFromStationCode(station));
+            legDepartureStationTv.setText(StationUtils.getNameFromStationCode(station));
 
             if(platform != null && !platform.isEmpty()){
                 legDeparturePlatformTv.setText(context.getString(R.string.platform, platform));
@@ -123,7 +123,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             int colour = ContextCompat.getColor(context, R.color.colorDarkGray);
             legDepartureTv.setTextColor(colour);
-            legDeparuteStationTv.setTextColor(colour);
+            legDepartureStationTv.setTextColor(colour);
             legCurrentStationTv.setTextColor(colour);
             legOperatingCompanyTv.setTextColor(colour);
             legDeparturePlatformTv.setTextColor(colour);

@@ -15,19 +15,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/buttonLayout"
-        android:layout_margin="10dp">
+        android:layout_margin="5dp">
 
-        <Button
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_down_24dp"
+            android:layout_alignParentTop="true"
+            android:id="@+id/arrowImage"
+            android:layout_toEndOf="@+id/moreTrains"
+            android:layout_alignBottom="@+id/moreTrains"/>
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Search earlier/later trains"
-            android:id="@+id/moreTrainsButton"/>
-
+            android:id="@+id/moreTrains"
+            android:layout_gravity="center"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="82dp" />
     </RelativeLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_marginTop="8dp"
+        android:id="@+id/bottomLine"
         android:layout_weight="0.00"
         android:background="@android:color/darker_gray"
         android:layout_height="1.5dp" />

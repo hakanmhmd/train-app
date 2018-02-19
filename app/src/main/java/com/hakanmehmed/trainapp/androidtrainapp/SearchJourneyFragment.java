@@ -75,7 +75,7 @@ public class SearchJourneyFragment extends Fragment {
     }
     
     @OnClick(R.id.searchButton) void buttonPressed(){
-        findTrains();
+        findTrains(Utils.getCurrentTime());
     }
 
     private JourneyFinderApi api;
@@ -128,7 +128,7 @@ public class SearchJourneyFragment extends Fragment {
         }
     }
 
-    private void findTrains() {
+    private void findTrains(String time) {
         String from = from_station.getText().toString();
         String to = to_station.getText().toString();
 
@@ -158,8 +158,11 @@ public class SearchJourneyFragment extends Fragment {
         loadingTvBig.setVisibility(VISIBLE);
         loadingTvBig.setText(R.string.finding_trains_text);
         loadingTvSmall.setVisibility(GONE);
-        getTrains(from, to);
+        getTrains(from, to, time);
+    }
 
+    void performNewSearch(String time){
+        findTrains(time);
     }
 
     private void hideKeyboard(FragmentActivity context) {
@@ -177,8 +180,8 @@ public class SearchJourneyFragment extends Fragment {
         to_station.clearFocus();
     }
 
-    private void getTrains(String from, String to) {
-        api.getJourneys(JourneyFinderApi.buildApiQuery(from, to), new CustomCallback<JourneySearchResponse>() {
+    private void getTrains(String from, String to, String time) {
+        api.getJourneys(JourneyFinderApi.buildApiQuery(from, to, time), new CustomCallback<JourneySearchResponse>() {
             @Override
             public void onSuccess(Response<JourneySearchResponse> response) {
                 Log.d(TAG, "API call successful!");

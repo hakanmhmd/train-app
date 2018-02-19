@@ -8,17 +8,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.view.View.*;
 
 /**
  * Created by hakanmehmed on 13/02/2018.
@@ -41,23 +46,57 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
         @BindView(R.id.buttonLayout)
         RelativeLayout buttonLayout;
-        @BindView(R.id.moreTrainsButton)
-        Button moreTrainsButton;
+        @BindView(R.id.arrowImage)
+        ImageView arrowImage;
+        @BindView(R.id.moreTrains)
+        TextView moreTrains;
+        @BindView(R.id.bottomLine)
+        View bottomLine;
 
         public ButtonViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            moreTrainsButton.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, "lalal", Toast.LENGTH_LONG).show();
+                    int position = getAdapterPosition();
+                    if(position == 0){
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                        String firstTrainTime = allJourneys.get(0)
+                                .getLegs().get(0).getOrigin().getScheduledTime();
+                        Date departTime = null;
+                        try {
+                            departTime = format.parse(firstTrainTime);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        Calendar c = Calendar.getInstance();
+                        c.setTime(departTime);
+                        c.add(Calendar.HOUR, -1);
+                        c.add(Calendar.MINUTE, -30);
+
+                        ((SearchJourneyFragment)fragment).performNewSearch(format.format(c.getTime()));
+                    } else {
+                        String lastTrainTime = allJourneys.get(allJourneys.size()-1)
+                                .getLegs().get(0).getOrigin().getScheduledTime();
+                        Log.v(TAG, "it is " + lastTrainTime);
+                        ((SearchJourneyFragment)fragment).performNewSearch(lastTrainTime);
+                    }
                 }
             });
         }
 
-        void setButtonText(String text){
-            moreTrainsButton.setText(text);
+        void removeBottomLine(){
+            bottomLine.setVisibility(GONE);
+        }
+
+        void setTextMessage(String text){
+            moreTrains.setText(text);
+        }
+
+        void setArrowImage(int drawable){
+            arrowImage.setImageResource(drawable);
         }
     }
 
@@ -92,7 +131,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             super(v);
             ButterKnife.bind(this, v);
 
-            v.setOnClickListener(new View.OnClickListener() {
+            v.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
@@ -166,9 +205,12 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if(h.getItemViewType() == 0) {
             ButtonViewHolder holder = (ButtonViewHolder) h;
             if(position == 0){
-                holder.setButtonText("Search for earlier trains.");
+                holder.setTextMessage("Search for earlier trains.");
+                holder.setArrowImage(R.drawable.ic_arrow_up_24dp);
             } else {
-                holder.setButtonText("Search for later trains.");
+                holder.setTextMessage("Search for later trains.");
+                holder.setArrowImage(R.drawable.ic_arrow_down_24dp);
+                holder.removeBottomLine();
             }
         } else {
             SearchViewHolder holder = (SearchViewHolder) h;
