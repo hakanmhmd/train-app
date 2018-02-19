@@ -135,7 +135,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
 
         void setDuration(String departureTime, String arrivalTime){
-            durationTv.setText(Utils.getDuration(departureTime, arrivalTime));
+            durationTv.setText(Utils.getTimeDifference(departureTime, arrivalTime, true));
         }
     }
 

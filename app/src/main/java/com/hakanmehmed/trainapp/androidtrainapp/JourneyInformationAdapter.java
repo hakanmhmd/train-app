@@ -163,7 +163,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
 
         public void setDuration(String departTime, String arriveTime){
-            legDurationTv.setText(Utils.getTimeDifference(arriveTime, departTime));
+            legDurationTv.setText(Utils.getTimeDifference(arriveTime, departTime, false));
         }
     }
 
@@ -198,7 +198,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         String arriveTime = Utils.getArriveTime(currentLeg.getDestination());
         String departTime = Utils.getDepartTime(nextLeg.getOrigin());
 
-        h.setDuration(Utils.getTimeDifference(departTime, arriveTime));
+        h.setDuration(Utils.getTimeDifference(departTime, arriveTime, false));
         h.setStation(currentLeg.getDestination().getStationCode());
     }
 

@@ -115,7 +115,7 @@ class SubscribeJourneyAdapter extends RecyclerView.Adapter<SubscribeJourneyAdapt
         }
 
         void setDuration(String departureTime, String arrivalTime){
-            durationTv.setText(Utils.getDuration(departureTime, arrivalTime));
+            durationTv.setText(Utils.getTimeDifference(departureTime, arrivalTime, true));
         }
 
         void setReminder(String departureDateTime, int reminder){

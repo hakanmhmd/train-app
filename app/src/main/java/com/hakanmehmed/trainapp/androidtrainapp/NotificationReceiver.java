@@ -138,7 +138,8 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
 
             /* check each train leg delay, will return "" if there is no delay */
-            String delay = Utils.getTimeDifference(leg.getOrigin().getRealTime(), leg.getOrigin().getScheduledTime());
+            // TODO: Is this wokring
+            String delay = Utils.getTimeDifference(leg.getOrigin().getRealTime(), leg.getOrigin().getScheduledTime(), false);
             if(!delay.equals("")){
                 String prefix = "Train from " + leg.getOrigin().getStationCode() + " is delayed by ";
                 String suffix = " (exp. " + Utils.formatTime(Utils.getDepartTime(leg.getOrigin())) + ")";

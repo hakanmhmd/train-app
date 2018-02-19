@@ -56,7 +56,7 @@ public class JourneyInformationActivity extends AppCompatActivity {
         String arriveStation = StationUtils.getNameFromStationCode(journey.getDestination());
         journeyStationsTv.setText(getString(R.string.route, departStation, arriveStation));
 
-        String duration = Utils.getTimeDifference(journey.getArrivalDateTime(), journey.getDepartureDateTime());
+        String duration = Utils.getTimeDifference(journey.getArrivalDateTime(), journey.getDepartureDateTime(), false);
 
         Log.v(TAG, duration);
         int changes = journey.getLegs().size() - 1;

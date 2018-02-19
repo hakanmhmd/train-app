@@ -69,15 +69,18 @@ public class Utils {
         }
     }
 
-    static String getTimeDifference(String arrivalTime, String departureTime) {
+    static String getTimeDifference(String time1String, String time2String, boolean shorten) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        if(departureTime == null || arrivalTime == null) return "";
+        if(time2String == null || time1String == null) return "";
         try {
-
-            Date departureDate = format.parse(departureTime);
-            Date arrivalDate = format.parse(arrivalTime);
-
-            long difference = arrivalDate.getTime() - departureDate.getTime();
+            Date time1Date = format.parse(time1String);
+            Date time2Date = format.parse(time2String);
+            long difference;
+            if(time1Date.after(time2Date)){
+                difference = time1Date.getTime() - time2Date.getTime();
+            } else {
+                difference = time2Date.getTime() - time1Date.getTime();
+            }
 
             long hours = TimeUnit.MILLISECONDS.toHours(difference);
             long minutes = TimeUnit.MILLISECONDS.toMinutes(difference) -
@@ -88,11 +91,19 @@ public class Utils {
 
             String delayText = "";
             if(hours > 0){
-                delayText += strHours + (hours > 1 ? " hours " : " hour ");
+                if(shorten) {
+                    delayText += strHours + "h ";
+                } else {
+                    delayText += strHours + (hours > 1 ? " hours " : " hour ");
+                }
             }
 
             if(minutes > 0){
-                delayText += strMinutes + (minutes > 1 ? " minutes" : " minute");
+                if(shorten){
+                    delayText += strMinutes + "m ";
+                } else {
+                    delayText += strMinutes + (minutes > 1 ? " minutes" : " minute");
+                }
             }
 
             return delayText;
