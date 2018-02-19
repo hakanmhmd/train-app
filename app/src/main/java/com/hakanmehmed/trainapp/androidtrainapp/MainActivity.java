@@ -9,10 +9,16 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity  {
     // TODO: change colors of layouts
-    private BottomNavigationView mMainNav;
-    private FrameLayout mMainFrame;
+
+    @BindView(R.id.main_nav)
+    BottomNavigationView main_nav;
+    @BindView(R.id.main_frame)
+    FrameLayout main_frame;
 
     private LocationFragment locationFragment;
     private SearchJourneyFragment searchJourneyFragment;
@@ -23,14 +29,14 @@ public class MainActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mMainFrame = (FrameLayout) findViewById(R.id.main_frame);
-        mMainNav = (BottomNavigationView) findViewById(R.id.main_nav);
+        ButterKnife.bind(this);
+
         locationFragment = new LocationFragment();
         searchJourneyFragment = new SearchJourneyFragment();
         savedJourneyFragment = new SubscribeJourneyFragment();
         setFragment(locationFragment);
 
-        mMainNav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+        main_nav.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {

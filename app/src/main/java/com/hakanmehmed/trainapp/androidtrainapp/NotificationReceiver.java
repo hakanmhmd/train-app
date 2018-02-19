@@ -55,9 +55,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                         .setSmallIcon(R.drawable.ic_train_24dp)
                         .setContentTitle("Unsubscribe")
-                        .setContentText("Unsubscribed from journey :" + journey.getOrigin() +
-                                " to " + journey.getDestination() +
-                                " at " + journey.getLegs().get(0).getOrigin().getScheduledTime())
+                        .setContentText("Unsubscribed from journey " + journey.getOrigin() +
+                                " to " + journey.getDestination())
+                        .setSubText(" running at " + Utils.formatTime(journey.getLegs().get(0).getOrigin().getScheduledTime()))
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setDefaults(Notification.DEFAULT_ALL)
                         .setAutoCancel(true);
@@ -90,7 +90,6 @@ public class NotificationReceiver extends BroadcastReceiver {
                 if(journeys == null) return;
                 for(Journey j : journeys){
                     if(j.equals(journey)){
-                        Log.v(TAG, "FOUND ITTTTTTT");
                         buildNotification(j, journey.getNotificationId(), context);
                         handler.postDelayed(new Runnable() {
                             @Override

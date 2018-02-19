@@ -10,14 +10,16 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdate;
@@ -26,6 +28,9 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 /**
@@ -37,6 +42,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private FragmentActivity myContext;
 
+    @BindView(R.id.floating_search_view)
+    FloatingSearchView floating_search_view;
 
     @Override
     public void onAttach(Context activity) {
@@ -54,29 +61,60 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_location, container, false);
+
+        ButterKnife.bind(this, view);
         if (googleServicesAvailable()) {
             initMap();
-            final EditText trainIdEditText = (EditText) view.findViewById(R.id.trainIdInput);
-            trainIdEditText.setOnKeyListener(new View.OnKeyListener() {
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    // If the event is a key-down event on the "enter" button
-                    if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
-                            (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                        // Perform action on key press
-                        Toast.makeText(getActivity(), trainIdEditText.getText(), Toast.LENGTH_SHORT).show();
-                        //Perform api calls here
-                        return true;
-                    }
-                    return false;
+            floating_search_view.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+                @Override
+                public void onSuggestionClicked(SearchSuggestion searchSuggestion) {
+
+                }
+
+                @Override
+                public void onSearchAction(String currentQuery) {
+                    Log.v(TAG, "CLICKED");
+                    pointToLocation();
                 }
             });
+
+//            new View.OnKeyListener() {
+//                public boolean onKey(View v, int keyCode, KeyEvent event) {
+//                    // If the event is a key-down event on the "enter" button
+//                    if ((event.getAction() == KeyEvent.ACTION_DOWN) &&
+//                            (keyCode == KeyEvent.KEYCODE_ENTER)) {
+//                        Log.v(TAG, "CLICKED");
+//                        pointToLocation();
+//                        return true;
+//                    }
+//                    return false;
+//                }
+//            });
         } else {
             // layout for not supported
             view = inflater.inflate(R.layout.not_supported, container, false);
         }
+
         return view;
 
 
+    }
+
+    private void pointToLocation() {
+        String location = floating_search_view.getQuery();
+        Log.v(TAG, location);
+
+//            double latitude = addressList.get(0).getLatitude();
+//            double longitude = addressList.get(0).getLongitude();
+            goToLocation(51.509865, -0.118092, 6);
+            //Toast.makeText(getContext(), "Could not pinpoint the train.", Toast.LENGTH_LONG).show();
+
+    }
+
+    private void goToLocation(double lat, double lon, float zoom) {
+        LatLng ll = new LatLng(lat, lon);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, zoom);
+        map.moveCamera(cameraUpdate);
     }
 
     private void initMap() {
@@ -125,6 +163,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_PERMISSION_CODE);
             }
         }
+
+        map.setPadding(0, 10, 0, 0);
     }
 
     @Override
@@ -143,12 +183,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 }
                 break;
         }
-    }
-
-    private void goToLocation(double lat, double lon, float zoom) {
-        LatLng ll = new LatLng(lat, lon);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, zoom);
-        map.moveCamera(cameraUpdate);
     }
 
 }

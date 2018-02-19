@@ -198,7 +198,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         String arriveTime = Utils.getArriveTime(currentLeg.getDestination());
         String departTime = Utils.getDepartTime(nextLeg.getOrigin());
 
-        h.setDuration(Utils.getTimeDifference(arriveTime, departTime));
+        h.setDuration(Utils.getTimeDifference(departTime, arriveTime));
+        h.setStation(currentLeg.getDestination().getStationCode());
     }
 
     private void setupLeg(RecyclerView.ViewHolder holder, int position) {

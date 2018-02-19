@@ -1,27 +1,33 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.hakanmehmed.trainapp.androidtrainapp.LocationFragment"
     android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-
-
-    <EditText
-        android:id="@+id/trainIdInput"
-        android:layout_width="match_parent"
-        android:layout_height="62dp"
-        android:ems="10"
-        android:hint="@string/input_hint"
-        android:inputType="text" />
-
-    <fragment
+    <fragment xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map_fragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.hakanmehmed.trainapp.androidtrainapp.LocationFragment" />
 
+    <com.arlib.floatingsearchview.FloatingSearchView
+        android:id="@+id/floating_search_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:floatingSearch_searchBarMarginLeft="20dp"
+        app:floatingSearch_searchBarMarginTop="5dp"
+        app:floatingSearch_searchBarMarginRight="60dp"
+        app:floatingSearch_searchHint="Search for trains..."
+        app:floatingSearch_suggestionsListAnimDuration="250"
+        app:floatingSearch_showSearchKey="true"
+        app:floatingSearch_leftActionMode="noLeftAction"
 
-</LinearLayout>
+        app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+
+
+
+
+</RelativeLayout>

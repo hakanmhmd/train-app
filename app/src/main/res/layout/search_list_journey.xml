@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/llRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:hardwareAccelerated="false"
@@ -97,6 +96,16 @@
             android:textColor="@color/colorLightGray"
             android:layout_below="@+id/arrivalStationTv"
             android:layout_alignStart="@+id/arrivalStationTv" />
+
+        <TextView
+            android:text="@string/track_live"
+            android:textColor="@color/green"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:id="@+id/trackLiveBtn"
+            android:clickable="true"/>
 
 
         <TextView

@@ -85,29 +85,31 @@ public class SearchJourneyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_search_journey, container, false);
+        if(view == null) {
+            view = inflater.inflate(R.layout.fragment_search_journey, container, false);
 
-        ButterKnife.bind(this, view);
+            ButterKnife.bind(this, view);
 
-        api = new JourneyFinderApi();
+            api = new JourneyFinderApi();
 
-        String[] stations = StationUtils.getStations();
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
-                android.R.layout.simple_dropdown_item_1line, stations);
+            String[] stations = StationUtils.getStations();
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
+                    android.R.layout.simple_dropdown_item_1line, stations);
 
-        // Auto-completion functionality for the two fields
-        to_station.setPaintFlags(INVISIBLE);
-        from_station.setPaintFlags(INVISIBLE);
-        to_station.setAdapter(adapter);
-        from_station.setAdapter(adapter);
+            // Auto-completion functionality for the two fields
+            to_station.setPaintFlags(INVISIBLE);
+            from_station.setPaintFlags(INVISIBLE);
+            to_station.setAdapter(adapter);
+            from_station.setAdapter(adapter);
 
-        searchResults.setHasFixedSize(true);
-        searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
+            searchResults.setHasFixedSize(true);
+            searchResults.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        recentSearches.setHasFixedSize(true);
-        recentSearches.setLayoutManager(new LinearLayoutManager(getContext()));
+            recentSearches.setHasFixedSize(true);
+            recentSearches.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        showRecentSearches();
+            showRecentSearches();
+        }
 
         return view;
     }

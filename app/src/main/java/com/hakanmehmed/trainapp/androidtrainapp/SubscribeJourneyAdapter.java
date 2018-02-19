@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.view.View.*;
+import static android.view.View.GONE;
 
 /**
  * Created by hakanmehmed on 15/02/2018.

@@ -10,6 +10,8 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kofigyan.stateprogressbar.StateProgressBar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,11 @@ public class JourneyInformationActivity extends AppCompatActivity {
     TextView journeyDetailsTv;
     @BindView(R.id.journeyLegsRv)
     RecyclerView journeyLegsRv;
+    @BindView(R.id.trainProgressBar)
+    StateProgressBar trainProgressBar;
 
     private LiveDataFeedApi api;
+    String[] descriptionData = {"Details", "Status", "Photo", "Confirm"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,10 @@ public class JourneyInformationActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         api = new LiveDataFeedApi();
+        trainProgressBar.setStateDescriptionData(descriptionData);
+        trainProgressBar.setAnimationDuration(20000);
+        trainProgressBar.setCurrentStateNumber(StateProgressBar.StateNumber.TWO);
+
 
         Journey journey = Utils.jsonToJourney(getIntent().getStringExtra("journey"));
         getLiveDataFeed(journey);
@@ -113,6 +122,6 @@ public class JourneyInformationActivity extends AppCompatActivity {
         journeyLegsRv.setAdapter(new JourneyInformationAdapter(journey, legInfo, getApplicationContext(), this));
         journeyLegsRv.invalidate();
 
-        Log.d("JourneyActivity", "Updated adapter with realtime data");
+        Log.d(TAG, "Updated adapter with live data");
     }
 }
