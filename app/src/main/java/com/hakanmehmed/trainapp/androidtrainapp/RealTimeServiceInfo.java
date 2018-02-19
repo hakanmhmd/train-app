@@ -5,24 +5,34 @@ package com.hakanmehmed.trainapp.androidtrainapp;
  */
 
 class RealTimeServiceInfo {
-    private Boolean hasArrivedOrDeparted;
+    private Boolean hasArrived;
+    private Boolean hasDeparted;
     private String realTime;
     private String realTimePlatform;
     private String realTimeFlag;
 
-    public RealTimeServiceInfo(Boolean hasArrivedOrDeparted, String realTime, String realTimePlatform, String realTimeFlag) {
-        this.hasArrivedOrDeparted = hasArrivedOrDeparted;
+    public RealTimeServiceInfo(Boolean hasArrived, Boolean hasDeparted, String realTime, String realTimePlatform, String realTimeFlag) {
+        this.hasArrived = hasArrived;
+        this.hasDeparted = hasDeparted;
         this.realTime = realTime;
         this.realTimePlatform = realTimePlatform;
         this.realTimeFlag = realTimeFlag;
     }
 
-    public Boolean getHasArrivedOrDeparted() {
-        return hasArrivedOrDeparted;
+    public Boolean getHasArrived() {
+        return hasArrived;
     }
 
-    public void setHasArrivedOrDeparted(Boolean hasArrivedOrDeparted) {
-        this.hasArrivedOrDeparted = hasArrivedOrDeparted;
+    public void setHasArrived(Boolean hasArrived) {
+        this.hasArrived = hasArrived;
+    }
+
+    public Boolean getHasDeparted() {
+        return hasDeparted;
+    }
+
+    public void setHasDeparted(Boolean hasDeparted) {
+        this.hasDeparted = hasDeparted;
     }
 
     public String getRealTime() {
@@ -52,7 +62,8 @@ class RealTimeServiceInfo {
     @Override
     public String toString() {
         return "RealTimeServiceInfo{" +
-                "hasArrivedOrDeparted=" + hasArrivedOrDeparted +
+                "hasArrived=" + hasArrived +
+                ", hasDeparted=" + hasDeparted +
                 ", realTime='" + realTime + '\'' +
                 ", realTimePlatform='" + realTimePlatform + '\'' +
                 ", realTimeFlag='" + realTimeFlag + '\'' +

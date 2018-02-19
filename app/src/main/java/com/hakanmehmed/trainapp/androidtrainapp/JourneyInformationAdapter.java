@@ -11,6 +11,8 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import static android.view.View.*;
 
 class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String TAG = "JourneyInfoAdapter";
     private final Journey journey;
     private final HashMap<String, LiveDataSearchResponse> legInfo;
     private final Context context;
@@ -205,7 +208,6 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private void setupLeg(RecyclerView.ViewHolder holder, int position) {
         LegViewer h = (LegViewer) holder;
 
-
         JourneyLeg leg = journey.getLegs().get(position / 2);
 
         String arriveTime = Utils.formatTime(leg.getDestination().getScheduledTime());
@@ -239,7 +241,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         h.setCancelled(leg.getCancelled());
 
-        if(transportModeIsTrain || legInfo == null) return;
+        if(!transportModeIsTrain || legInfo == null) return;
 
         if(legInfo.get(leg.getTrainId()) != null && legInfo.get(leg.getTrainId()).getRealTimeDataAvailable()){
             List<Stop> stops = legInfo.get(leg.getTrainId()).getService().getStops();
@@ -256,11 +258,11 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 /* default arrived to true if we're at the starting station */
                 boolean arrived = startingStation || (stop.getArrival().getRealTime() != null
-                        && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrivedOrDeparted());
+                        && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived());
 
                 /* default departed to false if we're at the ending station */
                 boolean departed = endingStation || (stop.getDeparture().getRealTime() != null
-                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasArrivedOrDeparted());
+                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
 
                 if(arrived && !departed){
                     Log.d("Currently at", station);
@@ -272,7 +274,11 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 Stop nextStop = stops.get(i + 1);
                 boolean nextArrived = nextStop.getArrival().getRealTime() != null
-                        && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrivedOrDeparted();
+                        && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
+
+                Log.v(TAG, "arrived : " + arrived);
+                Log.v(TAG, "departed : " + arrived);
+                Log.v(TAG, "nextArrived : " + arrived);
                 if(departed && !nextArrived){
                     String nextStation = StationUtils.getNameFromStationCode(nextStop.getLocation().getCrs());
                     Log.d("Travelling to ", nextStation);
