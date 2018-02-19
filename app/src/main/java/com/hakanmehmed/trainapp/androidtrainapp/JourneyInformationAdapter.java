@@ -11,15 +11,14 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static android.view.View.*;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 /**
  * Created by hakanmehmed on 17/02/2018.
@@ -233,8 +232,10 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if(leg.getDestination().getRealTime() == null){
             h.setArriveStatus("On time");
+            // TODO: ARRIVED ON TIME?
         } else {
             h.setArriveStatus("Exp " + Utils.formatTime(bestArriveTime));
+            // TODO : ARRIVED ON ????
         }
 
         h.setDuration(bestDepartTime, bestArriveTime);
@@ -276,13 +277,11 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 boolean nextArrived = nextStop.getArrival().getRealTime() != null
                         && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
 
-                Log.v(TAG, "arrived : " + arrived);
-                Log.v(TAG, "departed : " + arrived);
-                Log.v(TAG, "nextArrived : " + arrived);
+
                 if(departed && !nextArrived){
                     String nextStation = StationUtils.getNameFromStationCode(nextStop.getLocation().getCrs());
                     Log.d("Travelling to ", nextStation);
-                    h.setCurrentStation(nextStation, R.string.travelling_towards);
+                    h.setCurrentStation(nextStation, R.string.travelling_to);
                     break;
                 }
             }

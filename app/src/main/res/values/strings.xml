@@ -20,7 +20,7 @@
     <string name="no_platform">Plat. -</string>
     <string name="platform">Plat. %1$s</string>
     <string name="current_station">Currently at %s</string>
-    <string name="travelling_towards">Travelling towards %s</string>
+    <string name="travelling_to">Travelling to %s</string>
 
     <string name="no_changes">No changes</string>
     <string name="one_change">1 change</string>
