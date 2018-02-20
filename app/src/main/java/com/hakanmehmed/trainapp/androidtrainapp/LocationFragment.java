@@ -29,6 +29,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,7 +74,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             subscribedJourneys = Utils.getSubscribedJourneys(getContext());
             String[] routes = new String[subscribedJourneys.size()];
             for (int i = 0; i < routes.length; i++) {
-                routes[i] = subscribedJourneys.get(i).getOrigin() + " - " + subscribedJourneys.get(i).getDestination();
+                Journey currentJourney = subscribedJourneys.get(i);
+                routes[i] = currentJourney.getOrigin() + " to " + currentJourney.getDestination();
             }
 
             ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
@@ -91,8 +93,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             searchRoutes.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    String route = (String) adapterView.getItemAtPosition(i);
-                    drawRoute(route);
+                    Journey journey = subscribedJourneys.get(i);
+                    map.clear();
+                    drawRoute(journey);
                 }
             });
         } else {
@@ -103,26 +106,16 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         return view;
     }
 
-    private void drawRoute(String route) {
-        String[] parts = route.split(" - ");
-        String origin = StationUtils.getNameFromStationCode(parts[0].trim());
-        String dest = StationUtils.getNameFromStationCode(parts[1].trim());
+    private void drawRoute(Journey route) {
+        List<JourneyLeg> legs = route.getLegs();
+        for (JourneyLeg leg : legs) {
+            String origin = StationUtils.getNameFromStationCode(leg.getOrigin().getStationCode());
+            String dest = StationUtils.getNameFromStationCode(leg.getDestination().getStationCode());
 
-        String url = getDirectionsURL(origin, dest);
-        Log.v(TAG, url);
-        DirectionsData dd = new DirectionsData();
-        dd.execute(map, url, this);
-    }
-
-    private void pointToLocation(String route) {
-        //String location = floating_search_view.getQuery();
-        Log.v(TAG, route);
-
-//            double latitude = addressList.get(0).getLatitude();
-//            double longitude = addressList.get(0).getLongitude();
-            goToLocation(51.509865, -0.118092, 6);
-            //Toast.makeText(getContext(), "Could not pinpoint the train.", Toast.LENGTH_LONG).show();
-
+            String url = getDirectionsURL(origin, dest);
+            DirectionsData dd = new DirectionsData();
+            dd.execute(map, url, this);
+        }
     }
 
     private void goToLocation(double lat, double lon, float zoom) {
@@ -136,9 +129,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map_fragment);
 
         mapFragment.getMapAsync(this);
-        //MapFragment supportFragmentManager = (MapFragment) myContext.getSupportFragmentManager().findFragmentById(R.id.map_fragment);
-
-        //mapFragment.getMapAsync(this);
     }
 
 
@@ -201,10 +191,10 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
 
     public String getDirectionsURL(String origin, String dest) {
         StringBuilder directions = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        directions.append("origin=").append(origin.replaceAll("\\s", "+"));
-        directions.append("&destination=").append(dest.replaceAll("\\s", "+"));
+        directions.append("origin=").append(origin.replaceAll("\\s", "+")).append(",UK");
+        directions.append("&destination=").append(dest.replaceAll("\\s", "+")).append(",UK");
         directions.append("&key=AIzaSyB9bCyV8KuYf87ov1r0EBgpdBob8sildxo");
-        directions.append("&mode=transit");
+        directions.append("&mode=transit").append("&transit_mode=train");
 
         return directions.toString();
     }

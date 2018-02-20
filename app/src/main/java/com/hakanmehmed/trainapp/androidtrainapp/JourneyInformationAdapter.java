@@ -63,8 +63,6 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             changeStationTv.setText(context.getString(R.string.change_message,
                     StationUtils.getNameFromStationCode(station)));
         }
-
-
     }
 
     public class LegViewer extends RecyclerView.ViewHolder{
@@ -136,8 +134,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public void setCancelled(boolean cancelled){
             if(!cancelled) return;
 
-            setArriveStatus("-");
-            setDepartStatus("-");
+            setArriveStatus("Cancelled");
+            setDepartStatus("Cancelled");
 
             int colour = ContextCompat.getColor(context, R.color.colorDarkGray);
             legDepartureTv.setTextColor(colour);

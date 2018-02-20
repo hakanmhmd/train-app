@@ -52,13 +52,11 @@ class DirectionsData extends AsyncTask<Object, String, String>{
         for (int i = 0; i < directionsList.length; i++) {
             PolylineOptions options = new PolylineOptions();
             options.color(Color.RED);
-            options.width(10);
+            options.width(15);
             options.addAll(PolyUtil.decode(directionsList[i]));
 
             map.addPolyline(options);
         }
-
-
     }
 
     private String readUrl(String urlString) {
