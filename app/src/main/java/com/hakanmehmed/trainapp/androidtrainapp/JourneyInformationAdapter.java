@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -88,6 +90,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         TextView legCurrentStationTv;
         @BindView(R.id.green_circle)
         ImageView green_circle;
+        @BindView(R.id.listView)
+        ListView listView;
 
         public LegViewer(View itemView) {
             super(itemView);
@@ -95,6 +99,18 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             green_circle.setVisibility(GONE);
             legCurrentStationTv.setVisibility(GONE);
+
+            String[] time = {"00:10","00:11","00:12" };
+
+            String[] platform = {
+                    "Plat 1",
+                    "Plat 2",
+                    "Plat 3"
+            };
+            String[] station = {"Stat 1", "Stat 2", "Stat 3", ""};
+
+            listView.setAdapter(new LegInformationListViewAdapter(activity, time, null, platform, null, station, null));
+
         }
 
         public void setArrival(String time, String station){
@@ -219,7 +235,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         h.setDeparture(departTime, departStation, departPlatform);
 
         boolean transportModeIsTrain = leg.getTransportMode().equals("Train");
-        h.setOperatingCompany(transportModeIsTrain ? leg.getServiceProviderName() : "Walk");
+        h.setOperatingCompany(transportModeIsTrain ? leg.getServiceProviderName() : leg.getTransportMode());
 
         String bestArriveTime = Utils.getArriveTime(leg.getDestination());
         String bestDepartTime = Utils.getDepartTime(leg.getOrigin());
@@ -249,6 +265,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             for(int i = 0; i < stops.size(); i++){
                 Stop stop = stops.get(i);
+                Log.v(TAG, stop.toString());
 
                 boolean startingStation = stop.getArrival().getNotApplicable() != null
                         && stop.getArrival().getNotApplicable();
@@ -256,6 +273,13 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         && stop.getDeparture().getNotApplicable();
 
                 String station = StationUtils.getNameFromStationCode(stop.getLocation().getCrs());
+
+//                if(!startingStation && !endingStation) {
+//                    Log.v(TAG, "" + station);
+//                    Log.v(TAG, "" + stop.getArrival().getScheduled().getScheduledTime());
+//                    Log.v(TAG, "" + stop.getArrival().getRealTime().getRealTimeServiceInfo().getRealTimePlatform());
+//                    Log.v(TAG, "" + stop.getArrival().getRealTime().getDelayReason().getReason());
+//                }
 
                 /* default arrived to true if we're at the starting station */
                 boolean arrived = startingStation || (stop.getArrival().getRealTime() != null
@@ -266,10 +290,12 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
 
                 if(arrived && !departed){
-                    Log.d("Currently at", station);
+                    Log.v("Currently at", station);
                     h.setCurrentStation(station, R.string.current_station);
                     break;
                 }
+
+
 
                 if(endingStation) continue;
 
@@ -280,7 +306,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 if(departed && !nextArrived){
                     String nextStation = StationUtils.getNameFromStationCode(nextStop.getLocation().getCrs());
-                    Log.d("Travelling to ", nextStation);
+                    Log.v("Travelling to ", nextStation);
                     h.setCurrentStation(nextStation, R.string.travelling_to);
                     break;
                 }

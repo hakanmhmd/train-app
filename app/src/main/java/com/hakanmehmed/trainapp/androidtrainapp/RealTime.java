@@ -6,9 +6,11 @@ package com.hakanmehmed.trainapp.androidtrainapp;
 
 class RealTime {
     private RealTimeServiceInfo realTimeServiceInfo;
+    private DelayReason delayReason;
 
-    public RealTime(RealTimeServiceInfo realTimeServiceInfo) {
+    public RealTime(RealTimeServiceInfo realTimeServiceInfo, DelayReason delayReason) {
         this.realTimeServiceInfo = realTimeServiceInfo;
+        this.delayReason = delayReason;
     }
 
     public RealTimeServiceInfo getRealTimeServiceInfo() {
@@ -19,10 +21,19 @@ class RealTime {
         this.realTimeServiceInfo = realTimeServiceInfo;
     }
 
+    public DelayReason getDelayReason() {
+        return delayReason;
+    }
+
+    public void setDelayReason(DelayReason delayReason) {
+        this.delayReason = delayReason;
+    }
+
     @Override
     public String toString() {
         return "RealTime{" +
                 "realTimeServiceInfo=" + realTimeServiceInfo +
+                ", delayReason=" + delayReason +
                 '}';
     }
 }

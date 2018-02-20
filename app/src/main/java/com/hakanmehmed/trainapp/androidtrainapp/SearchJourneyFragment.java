@@ -30,6 +30,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnFocusChange;
 import retrofit2.Response;
 
 import static android.view.View.GONE;
@@ -70,6 +71,8 @@ public class SearchJourneyFragment extends Fragment {
     @BindView(R.id.searchResults)
     RecyclerView searchResults;
 
+
+
     @OnClick(R.id.reverseIcon) void iconPressed() {
         swapSearchInputTextField();
     }
@@ -95,6 +98,23 @@ public class SearchJourneyFragment extends Fragment {
             String[] stations = StationUtils.getStations();
             ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
                     android.R.layout.simple_dropdown_item_1line, stations);
+
+            final FragmentActivity activity = getActivity();
+            to_station.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if(hasFocus) to_station.setText("");
+                    else hideKeyboard();
+                }
+            });
+
+            from_station.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View view, boolean hasFocus) {
+                    if(hasFocus) from_station.setText("");
+                    else hideKeyboard();
+                }
+            });
 
             // Auto-completion functionality for the two fields
             to_station.setPaintFlags(INVISIBLE);
@@ -150,7 +170,7 @@ public class SearchJourneyFragment extends Fragment {
             return;
         }
 
-        hideKeyboard(getActivity());
+        hideKeyboard();
         Utils.saveSearch(from, to, getContext());
 
         recentSearchesLayout.setVisibility(GONE);
@@ -165,12 +185,9 @@ public class SearchJourneyFragment extends Fragment {
         findTrains(time);
     }
 
-    private void hideKeyboard(FragmentActivity context) {
-        View view = context.getCurrentFocus();
-        if(view != null){
-            InputMethodManager manager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+    private void hideKeyboard() {
+        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     void fillUpFields(RecentSearch recentSearch) {
