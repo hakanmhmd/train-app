@@ -2,17 +2,18 @@ package com.hakanmehmed.trainapp.androidtrainapp;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -89,7 +90,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         @BindView(R.id.green_circle)
         ImageView green_circle;
         @BindView(R.id.listView)
-        ListView listView;
+        RecyclerView listView;
 
         public LegViewer(View itemView) {
             super(itemView);
@@ -98,17 +99,12 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             green_circle.setVisibility(GONE);
             legCurrentStationTv.setVisibility(GONE);
 
-            String[] time = {"00:10","00:11","00:12" };
+            listView.setHasFixedSize(true);
+            listView.setLayoutManager(new LinearLayoutManager(context));
+        }
 
-            String[] platform = {
-                    "Plat 1",
-                    "Plat 2",
-                    "Plat 3"
-            };
-            String[] station = {"Stat 1", "Stat 2", "Stat 3", ""};
-
-            listView.setAdapter(new LegInformationListViewAdapter(activity, time, null, platform, null, station, null));
-
+        public void setViewAdapter(ArrayList<StopInfo> info) {
+            listView.setAdapter(new LegInformationListViewAdapter(context, info));
         }
 
         public void setArrival(String time, String station){
@@ -223,14 +219,15 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         JourneyLeg leg = journey.getLegs().get(position / 2);
 
-        String arriveTime = Utils.formatTime(leg.getDestination().getScheduledTime());
-        String arriveStation = leg.getDestination().getStationCode();
-        h.setArrival(arriveTime, arriveStation);
-
+        //////////////////////////////////////////////////////////////////////////////
         String departTime = Utils.formatTime(leg.getOrigin().getScheduledTime());
         String departStation = leg.getOrigin().getStationCode();
         String departPlatform = leg.getOrigin().getPlatform();
         h.setDeparture(departTime, departStation, departPlatform);
+
+        String arriveTime = Utils.formatTime(leg.getDestination().getScheduledTime());
+        String arriveStation = leg.getDestination().getStationCode();
+        h.setArrival(arriveTime, arriveStation);
 
         boolean transportModeIsTrain = leg.getTransportMode().equals("Train");
         h.setOperatingCompany(transportModeIsTrain ? leg.getServiceProviderName() : leg.getTransportMode());
@@ -246,69 +243,146 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         if(leg.getDestination().getRealTime() == null){
             h.setArriveStatus("On time");
-            // TODO: ARRIVED ON TIME?
         } else {
             h.setArriveStatus("Exp " + Utils.formatTime(bestArriveTime));
-            // TODO : ARRIVED ON ????
         }
 
         h.setDuration(bestDepartTime, bestArriveTime);
 
         h.setCancelled(leg.getCancelled());
+        //////////////////////////////////////////////////////////////////////////////
 
-        if(!transportModeIsTrain || legInfo == null) return;
+        if(legInfo == null) {
+            return;
+        }
 
-        if(legInfo.get(leg.getTrainId()) != null && legInfo.get(leg.getTrainId()).getRealTimeDataAvailable()){
+        // When the connection is via bus or tube, legInfo does not exist
+        if(legInfo.get(leg.getTrainId()) == null){
+            ArrayList<StopInfo> stopInfo = new ArrayList<>();
+            StopInfo departureInfo = new StopInfo(departStation,
+                    leg.getOrigin().getScheduledTime(),
+                    null,
+                    "",
+                    transportModeIsTrain ? leg.getServiceProviderName() : leg.getTransportMode(),
+                    new Pair<String, Integer>(null ,null));
+
+            StopInfo arrivalInfo = new StopInfo(arriveStation,
+                    leg.getDestination().getScheduledTime(),
+                    null,
+                    "",
+                    "",
+                    new Pair<String, Integer>(null ,null));
+
+            stopInfo.add(departureInfo);
+            stopInfo.add(arrivalInfo);
+
+            h.setViewAdapter(stopInfo);
+            return;
+        }
+
+        String legDepartureStation = leg.getOrigin().getStationCode();
+        String legArrivalStation = leg.getDestination().getStationCode();
+        boolean shouldAddStop = false;
+        boolean firstStop = true;
+
+        // TODO: legs have more stations than the ones interested in - fix that
+        if(legInfo.get(leg.getTrainId()).getRealTimeDataAvailable()){
             List<Stop> stops = legInfo.get(leg.getTrainId()).getService().getStops();
 
+            ArrayList<StopInfo> stopInfo = new ArrayList<>();
             for(int i = 0; i < stops.size(); i++){
                 Stop stop = stops.get(i);
-                Log.v(TAG, stop.toString());
 
-                boolean startingStation = stop.getArrival().getNotApplicable() != null
+                String station = stop.getLocation().getCrs();
+                if(station.equals(legDepartureStation)){
+                    shouldAddStop = true;
+                }
+
+                if(!shouldAddStop){
+                    continue;
+                }
+
+                boolean isStartingStation = stop.getArrival().getNotApplicable() != null
                         && stop.getArrival().getNotApplicable();
-                boolean endingStation = stop.getDeparture().getNotApplicable() != null
+                boolean isEndingStation = stop.getDeparture().getNotApplicable() != null
                         && stop.getDeparture().getNotApplicable();
 
-                String station = StationUtils.getNameFromStationCode(stop.getLocation().getCrs());
+                String arrivalTime = isStartingStation ?
+                        null : (stop.getArrival().getScheduled() == null) ?
+                        null : stop.getArrival().getScheduled().getScheduledTime();
+                String departureTime = isEndingStation ?
+                        null : (stop.getDeparture().getScheduled() == null ?
+                        null : stop.getDeparture().getScheduled().getScheduledTime();
 
-//                if(!startingStation && !endingStation) {
-//                    Log.v(TAG, "" + station);
-//                    Log.v(TAG, "" + stop.getArrival().getScheduled().getScheduledTime());
-//                    Log.v(TAG, "" + stop.getArrival().getRealTime().getRealTimeServiceInfo().getRealTimePlatform());
-//                    Log.v(TAG, "" + stop.getArrival().getRealTime().getDelayReason().getReason());
-//                }
+                String time = departureTime == null ? (arrivalTime == null ? null : arrivalTime) : departureTime;
 
-                /* default arrived to true if we're at the starting station */
-                boolean arrived = startingStation || (stop.getArrival().getRealTime() != null
-                        && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived());
+                String platform = "";
+                if(!isEndingStation){
+                    platform = stop.getDeparture().getScheduled().getScheduledPlatform();
+                    if(platform == null && stop.getDeparture().getRealTime() != null){
+                        platform = stop.getDeparture().getRealTime().getRealTimeServiceInfo().getRealTimePlatform();
+                    }
+                }
 
-                /* default departed to false if we're at the ending station */
-                boolean departed = endingStation || (stop.getDeparture().getRealTime() != null
-                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
+                String status = "On time";
+                if(stop.getDeparture().getRealTime() != null && departureTime != null){
+                    String realTime = stop.getDeparture().getRealTime().getRealTimeServiceInfo().getRealTime();
+                    if(realTime != null) {
+                        if (!Utils.isSameTime(departureTime, realTime)) {
+                            status = "Exp. " + Utils.formatTime(realTime);
+                        }
+                    }
+                }
 
-                if(arrived && !departed){
-                    Log.v("Currently at", station);
-                    h.setCurrentStation(station, R.string.current_station);
-                    break;
+                String service = null;
+                if(firstStop){
+                    firstStop = false;
+                    String transportMode = leg.getTransportMode();
+                    String provider = leg.getServiceProviderName();
+                    service = transportMode.equals("Train") ? provider : transportMode;
                 }
 
 
+                boolean arrived = isStartingStation || (stop.getArrival().getRealTime() != null
+                        && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived());
 
-                if(endingStation) continue;
+                boolean departed = isEndingStation || (stop.getDeparture().getRealTime() != null
+                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
+
+                String progress = null;
+                int resource = 0;
+                if(arrived && !departed && !isStartingStation && !isEndingStation){
+                    //Log.v("Currently at", station);
+                    progress = station;
+                    resource = R.string.current_station;
+                    //h.setCurrentStation(station, R.string.current_station);
+                }
+
+                if(isEndingStation) continue;
 
                 Stop nextStop = stops.get(i + 1);
                 boolean nextArrived = nextStop.getArrival().getRealTime() != null
                         && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
 
-
                 if(departed && !nextArrived){
-                    String nextStation = StationUtils.getNameFromStationCode(nextStop.getLocation().getCrs());
-                    Log.v("Travelling to ", nextStation);
-                    h.setCurrentStation(nextStation, R.string.travelling_to);
-                    break;
+                    progress = nextStop.getLocation().getCrs();
+                    resource = R.string.travelling_to;
+                    //String nextStation = StationUtils.getNameFromStationCode(nextStop.getLocation().getCrs());
+                    //Log.v("Travelling to ", nextStation);
+                    //h.setCurrentStation(nextStation, R.string.travelling_to);
+                }
+
+                Pair<String, Integer> pair = new Pair<>(progress, resource);
+                StopInfo stopinfo = new StopInfo(station, time, platform, status, service, pair);
+                stopInfo.add(stopinfo);
+
+                if(station.equals(legArrivalStation)){
+                    shouldAddStop = false;
                 }
             }
+
+
+            h.setViewAdapter(stopInfo);
         }
     }
 

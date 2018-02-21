@@ -44,8 +44,20 @@ public class Utils {
     }
 
     static String getCurrentTime(){
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return df.format(Calendar.getInstance().getTime());
+    }
+
+    static long getMilliseconds(String dateString){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            Date date = format.parse(dateString);
+            return date.getTime() / 1000;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return 0;
+        }
+
     }
 
     static String getTimeDifference(String time1String, String time2String, boolean shorten) {
@@ -89,6 +101,23 @@ public class Utils {
         } catch(ParseException e){
             Log.v(TAG, "Could not parse");
             return "";
+        }
+    }
+
+    static boolean isSameTime(String time2String, String time1String) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        if (time2String == null || time1String == null) return false;
+        try {
+            Date time1Date = format.parse(time1String);
+            Date time2Date = format.parse(time2String);
+            if (time1Date.compareTo(time2Date) == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

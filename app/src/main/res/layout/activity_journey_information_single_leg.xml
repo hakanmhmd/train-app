@@ -5,85 +5,85 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp">
+
+        <ImageView
+            android:id="@+id/circle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="12dp">
+            android:layout_above="@+id/legOperatingCompanyTv"
+            android:layout_below="@+id/legDepartureTv"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="5dp"
+            android:layout_toEndOf="@+id/legDepartureStatusTv"
+            app:srcCompat="@drawable/live_circle" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/live_circle"
-                android:id="@+id/green_circle"
-                android:layout_toEndOf="@+id/legDepartureStatusTv"
-                android:layout_above="@+id/legOperatingCompanyTv"
-                android:layout_below="@+id/legDepartureTv"
-                android:layout_marginEnd="4dp"
-                />
-
-            <TextView
-                android:text="00:00"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorDarkGray"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_alignParentTop="true"
-                android:id="@+id/legDepartureTv"
-                android:paddingStart="0dp"
-                android:paddingEnd="24dp"
-                android:textAlignment="viewStart" />
+        <TextView
+            android:id="@+id/legDepartureTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:paddingEnd="35dp"
+            android:paddingStart="0dp"
+            android:text="00:00"
+            android:textAlignment="viewStart"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
 
-            <TextView
-                android:text="Virgin Trains"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/legOperatingCompanyTv"
-                android:layout_below="@+id/legCurrentStationTv"
-                android:layout_alignStart="@+id/legDepartureStationTv" />
+        <TextView
+            android:id="@+id/legOperatingCompanyTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/legDepartureStationTv"
+            android:layout_below="@+id/legCurrentStationTv"
+            android:text="Virgin Trains" />
 
-            <TextView
-                android:text="Platform 0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/legDeparturePlatformTv"
-                android:layout_below="@+id/legOperatingCompanyTv"
-                android:layout_alignStart="@+id/legOperatingCompanyTv" />
+        <TextView
+            android:id="@+id/legDeparturePlatformTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/legOperatingCompanyTv"
+            android:layout_below="@+id/legOperatingCompanyTv"
+            android:text="Platform 0" />
 
-            <TextView
-                android:text="On time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/legDepartureStatusTv"
-                android:textColor="@color/colorDarkGray"
-                android:textSize="14sp"
-                android:textAlignment="viewStart"
-                android:layout_below="@+id/legDepartureTv"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/legDepartureStationTv" />
+        <TextView
+            android:id="@+id/legDepartureStatusTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_below="@+id/legDepartureTv"
+            android:layout_toStartOf="@+id/legDepartureStationTv"
+            android:text="On time"
+            android:textAlignment="viewStart"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="14sp" />
 
-            <TextView
-                android:text="Hatfield"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/legDepartureStationTv"
-                android:textSize="20sp"
-                android:textColor="@color/colorDarkGray"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/legDepartureTv" />
+        <TextView
+            android:id="@+id/legDepartureStationTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/legDepartureTv"
+            android:text="Hatfield"
+            android:textColor="@color/colorDarkGray"
+            android:textSize="20sp" />
 
-            <TextView
-                android:text="Currently at/Travelling to Kings Cross"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/legCurrentStationTv"
-                android:textSize="16sp"
-                android:layout_below="@+id/legDepartureStationTv"
-                android:layout_toEndOf="@+id/green_circle" />
+        <TextView
+            android:id="@+id/legCurrentStationTv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/legDepartureStationTv"
+            android:layout_toEndOf="@+id/circle"
+            android:text="Currently at/Travelling to Kings Cross"
+            android:textSize="16sp" />
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
 </LinearLayout>

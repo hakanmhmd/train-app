@@ -6,9 +6,11 @@ package com.hakanmehmed.trainapp.androidtrainapp;
 
 class Scheduled {
     private String scheduledTime;
+    private String scheduledPlatform;
 
-    public Scheduled(String scheduledTime) {
+    public Scheduled(String scheduledTime, String scheduledPlatform) {
         this.scheduledTime = scheduledTime;
+        this.scheduledPlatform = scheduledPlatform;
     }
 
     public String getScheduledTime() {
@@ -17,6 +19,14 @@ class Scheduled {
 
     public void setScheduledTime(String scheduledTime) {
         this.scheduledTime = scheduledTime;
+    }
+
+    public String getScheduledPlatform() {
+        return scheduledPlatform;
+    }
+
+    public void setScheduledPlatform(String scheduledPlatform) {
+        this.scheduledPlatform = scheduledPlatform;
     }
 
     @Override

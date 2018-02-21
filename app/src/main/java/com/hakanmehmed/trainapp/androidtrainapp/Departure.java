@@ -5,21 +5,21 @@ package com.hakanmehmed.trainapp.androidtrainapp;
  */
 
 class Departure {
-    private Departure scheduled;
+    private Scheduled scheduled;
     private RealTime realTime;
     private Boolean notApplicable;
 
-    public Departure(Departure scheduled, RealTime realTime, Boolean notApplicable) {
+    public Departure(Scheduled scheduled, RealTime realTime, Boolean notApplicable) {
         this.scheduled = scheduled;
         this.realTime = realTime;
         this.notApplicable = notApplicable;
     }
 
-    public Departure getScheduled() {
+    public Scheduled getScheduled() {
         return scheduled;
     }
 
-    public void setScheduled(Departure scheduled) {
+    public void setScheduled(Scheduled scheduled) {
         this.scheduled = scheduled;
     }
 

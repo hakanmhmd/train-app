@@ -111,8 +111,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         for (JourneyLeg leg : legs) {
             String origin = StationUtils.getNameFromStationCode(leg.getOrigin().getStationCode());
             String dest = StationUtils.getNameFromStationCode(leg.getDestination().getStationCode());
+            String deptTime = leg.getOrigin().getScheduledTime();
 
-            String url = getDirectionsURL(origin, dest);
+            String url = getDirectionsURL(origin, dest, Utils.getMilliseconds(deptTime));
             DirectionsData dd = new DirectionsData();
             dd.execute(map, url, this);
         }
@@ -189,12 +190,15 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public String getDirectionsURL(String origin, String dest) {
+    public String getDirectionsURL(String origin, String dest, long milliseconds) {
         StringBuilder directions = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         directions.append("origin=").append(origin.replaceAll("\\s", "+")).append(",UK");
         directions.append("&destination=").append(dest.replaceAll("\\s", "+")).append(",UK");
+        directions.append("&departure_time=").append(milliseconds);
         directions.append("&key=AIzaSyB9bCyV8KuYf87ov1r0EBgpdBob8sildxo");
         directions.append("&mode=transit").append("&transit_mode=train");
+
+        Log.v(TAG, directions.toString());
 
         return directions.toString();
     }
