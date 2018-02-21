@@ -1,9 +1,6 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
-import android.app.Activity;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
@@ -13,18 +10,12 @@ import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static android.view.View.*;
+import static android.view.View.GONE;
 
 /**
  * Created by hakanmehmed on 20/02/2018.
@@ -59,6 +50,7 @@ public class LegInformationListViewAdapter extends RecyclerView.Adapter<LegInfor
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
         }
 
         void setLegDepartureTv(String time){
@@ -102,13 +94,6 @@ public class LegInformationListViewAdapter extends RecyclerView.Adapter<LegInfor
                 legCurrentStationTv.setText(context.getString(stringResource,
                         StationUtils.getNameFromStationCode(current)));
                 circle.setVisibility(View.VISIBLE);
-
-                AlphaAnimation anim = new AlphaAnimation(1, 0);
-                anim.setDuration(1000);
-                anim.setInterpolator(new LinearInterpolator());
-                anim.setRepeatCount(Animation.INFINITE);
-                anim.setRepeatMode(Animation.REVERSE);
-                circle.setAnimation(anim);
             }
         }
 
@@ -132,6 +117,14 @@ public class LegInformationListViewAdapter extends RecyclerView.Adapter<LegInfor
 
         Pair<String, Integer> pair = stopInfo.getPair();
         holder.setLegCurrentStationTv(pair.first, pair.second);
+
+        AlphaAnimation anim = new AlphaAnimation(1, 0);
+        anim.setDuration(1000);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.setRepeatCount(Animation.INFINITE);
+        anim.setRepeatMode(Animation.REVERSE);
+        holder.circle.setHasTransientState(true);
+        holder.circle.setAnimation(anim);
     }
 
     @Override
