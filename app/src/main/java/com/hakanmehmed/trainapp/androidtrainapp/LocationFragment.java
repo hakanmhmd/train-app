@@ -6,19 +6,24 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Interpolator;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
@@ -29,9 +34,11 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -201,27 +208,45 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
 
         LatLng ll = StationUtils.getLatLngFromStationCode(currentStation);
         if(ll != null){
-            map.addMarker(new MarkerOptions()
-                    .title(journey.getOrigin() + " to " + journey.getDestination())
-                    .snippet(message)
-                    .position(ll)
-                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.live_circle_map)))
+            Marker marker = map.addMarker(new MarkerOptions()
+                            .title(journey.getOrigin() + " to " + journey.getDestination())
+                            .snippet(message)
+                            .draggable(false)
+                            .position(ll)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             );
+            startMarkerAnim(marker);
         } else {
-            Toast.makeText(getContext(), "This journey had ended.", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), "This journey has not started or has ended.", Toast.LENGTH_LONG).show();
         }
 
     }
 
-    private Bitmap getBitmap(int drawableRes) {
-        Drawable drawable = getResources().getDrawable(drawableRes);
-        Canvas canvas = new Canvas();
-        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas.setBitmap(bitmap);
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        drawable.draw(canvas);
-
-        return bitmap;
+    private void startMarkerAnim(final Marker marker) {
+        final LatLng target = marker.getPosition();
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = map.getProjection();
+        Point targetPoint = proj.toScreenLocation(target);
+        final long duration = (long) (200 + (targetPoint.y * 0.6));
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        startPoint.y = 0;
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final Interpolator interpolator = new LinearOutSlowInInterpolator();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed / duration);
+                double lng = t * target.longitude + (1 - t) * startLatLng.longitude;
+                double lat = t * target.latitude + (1 - t) * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+                if (t < 1.0) {
+                    // Post again 16ms later == 60 frames per second
+                    handler.postDelayed(this, 16);
+                }
+            }
+        });
     }
 
 
@@ -314,7 +339,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         StringBuilder directions = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         directions.append("origin=").append(origin.replaceAll("\\s", "+")).append(",UK");
         directions.append("&destination=").append(dest.replaceAll("\\s", "+")).append(",UK");
-        directions.append("&departure_time=").append(milliseconds);
+        directions.append("&departure_time=").append(milliseconds-60000); // one minute before
         directions.append("&key=AIzaSyB9bCyV8KuYf87ov1r0EBgpdBob8sildxo");
         directions.append("&mode=transit").append("&transit_mode=train");
 
