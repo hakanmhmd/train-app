@@ -14,10 +14,9 @@
             android:id="@+id/circle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/legOperatingCompanyTv"
             android:layout_below="@+id/legDepartureTv"
-            android:layout_marginTop="8dp"
             android:layout_marginEnd="5dp"
+            android:layout_marginTop="5.5dp"
             android:layout_toEndOf="@+id/legDepartureStatusTv"
             app:srcCompat="@drawable/live_circle" />
 
@@ -40,15 +39,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/legDepartureStationTv"
-            android:layout_below="@+id/legCurrentStationTv"
+            android:layout_below="@+id/legDeparturePlatformTv"
             android:text="Virgin Trains" />
 
         <TextView
             android:id="@+id/legDeparturePlatformTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/legOperatingCompanyTv"
-            android:layout_below="@+id/legOperatingCompanyTv"
+            android:layout_alignStart="@+id/legDepartureStationTv"
+            android:layout_below="@+id/legCurrentStationTv"
             android:text="Platform 0" />
 
         <TextView

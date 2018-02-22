@@ -38,9 +38,10 @@ class DirectionsData extends AsyncTask<Object, String, String>{
         return directions;
     }
 
+
     @Override
     protected void onPostExecute(String s) {
-        String[] directionsList = parseDirections(s);
+        String[] directionsList = parseData(s);
         if(directionsList == null){
             fragment.notifyNoDirections();
         } else {
@@ -90,7 +91,7 @@ class DirectionsData extends AsyncTask<Object, String, String>{
         return data;
     }
 
-    private String[] parseDirections(String json) {
+    private String[] parseData(String json) {
         JSONArray jsonArray = null;
         JSONObject obj;
         try {

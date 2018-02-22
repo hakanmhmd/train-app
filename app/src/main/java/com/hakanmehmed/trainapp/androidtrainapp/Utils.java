@@ -200,7 +200,7 @@ public class Utils {
 
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             // will trigger even if device goes to sleep mode
-            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), 120000L, pendingIntent);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, c.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
             Log.v(TAG, "Notification is setup.");
         } catch(ParseException e){
             e.printStackTrace();

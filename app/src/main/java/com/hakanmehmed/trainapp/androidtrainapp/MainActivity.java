@@ -55,7 +55,8 @@ public class MainActivity extends AppCompatActivity  {
                 }
             }
         });
-        StationUtils.init(getApplicationContext());
+        StationUtils.initStations(getApplicationContext());
+        StationUtils.initStationLocations(getApplicationContext());
 
     }
 

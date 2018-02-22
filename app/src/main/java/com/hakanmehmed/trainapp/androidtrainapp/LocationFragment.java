@@ -4,6 +4,10 @@ package com.hakanmehmed.trainapp.androidtrainapp;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
+import android.location.Geocoder;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,13 +30,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Response;
 
 
 /**
@@ -44,6 +52,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     private GoogleMap map;
     private FragmentActivity myContext;
     private ArrayList<Journey> subscribedJourneys;
+    private LiveDataFeedApi api;
 
     //@BindView(R.id.floating_search_view)
     //FloatingSearchView floating_search_view;
@@ -70,7 +79,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         ButterKnife.bind(this, view);
         if (googleServicesAvailable()) {
             initMap();
-
+            api = new LiveDataFeedApi();
             subscribedJourneys = Utils.getSubscribedJourneys(getContext());
             String[] routes = new String[subscribedJourneys.size()];
             for (int i = 0; i < routes.length; i++) {
@@ -96,6 +105,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                     Journey journey = subscribedJourneys.get(i);
                     map.clear();
                     drawRoute(journey);
+                    getCurrentLocation(journey);
                 }
             });
         } else {
@@ -105,6 +115,117 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
 
         return view;
     }
+
+    //////////////////////////
+
+
+
+    public void getCurrentLocation(final Journey journey){
+        final List<LiveDataSearchResponse> liveDataSearchResponses = new ArrayList<>();
+
+        for(JourneyLeg leg : journey.getLegs()){
+
+            final String trainId = leg.getTrainId();
+
+            if(leg.getTransportMode().equals("Walk") || trainId == null){
+                liveDataSearchResponses.add(null);
+                continue;
+            }
+
+            api.getLiveData(trainId, new CustomCallback<LiveDataSearchResponse>() {
+                @Override
+                public void onSuccess(Response<LiveDataSearchResponse> response) {
+                    liveDataSearchResponses.add(response.body());
+
+                    if(liveDataSearchResponses.size() == journey.getLegs().size()){
+                        putOnMap(journey, liveDataSearchResponses);
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable throwable) {
+                    throwable.printStackTrace();
+                }
+            });
+        }
+    }
+
+    private void putOnMap(Journey journey, List<LiveDataSearchResponse> liveDataSearchResponses) {
+        HashMap<String, LiveDataSearchResponse> legInfo = new HashMap<>();
+        for(LiveDataSearchResponse train : liveDataSearchResponses){
+            if(train == null || train.getService() == null) continue;
+
+            String trainId = train.getService().getServiceUid();
+            legInfo.put(trainId, train);
+        }
+
+        String currentStation = "";
+        String message = "";
+        for (String trainId : legInfo.keySet()) {
+            LiveDataSearchResponse data = legInfo.get(trainId);
+            List<Stop> stops = data.getService().getStops();
+            for (int i = 0; i < stops.size(); i++) {
+                Stop stop = stops.get(i);
+                String station = stop.getLocation().getCrs();
+                boolean isStartingStation = stop.getArrival().getNotApplicable() != null
+                        && stop.getArrival().getNotApplicable();
+                boolean isEndingStation = stop.getDeparture().getNotApplicable() != null
+                        && stop.getDeparture().getNotApplicable();
+
+                boolean arrived = isStartingStation || (stop.getArrival().getRealTime() != null
+                        && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived());
+
+                boolean departed = isEndingStation || (stop.getDeparture().getRealTime() != null
+                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
+
+                if(arrived && !departed && !isStartingStation && !isEndingStation){
+                    currentStation = station;
+                    message = "Currently at " + StationUtils.getNameFromStationCode(station);
+                }
+
+                if(!isEndingStation) {
+                    Stop nextStop = stops.get(i + 1);
+                    boolean nextArrived = nextStop.getArrival().getRealTime() != null
+                            && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
+
+                    String nextStation = nextStop.getLocation().getCrs();
+                    if (departed && !nextArrived) {
+                        //between station and nextStation
+                        currentStation = station;
+                        message = "Travelling between " + StationUtils.getNameFromStationCode(station)
+                                + " and " + StationUtils.getNameFromStationCode(nextStation);
+                    }
+                }
+            }
+        }
+
+        LatLng ll = StationUtils.getLatLngFromStationCode(currentStation);
+        if(ll != null){
+            map.addMarker(new MarkerOptions()
+                    .title(journey.getOrigin() + " to " + journey.getDestination())
+                    .snippet(message)
+                    .position(ll)
+                    .icon(BitmapDescriptorFactory.fromBitmap(getBitmap(R.drawable.live_circle_map)))
+            );
+        } else {
+            Toast.makeText(getContext(), "This journey had ended.", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private Bitmap getBitmap(int drawableRes) {
+        Drawable drawable = getResources().getDrawable(drawableRes);
+        Canvas canvas = new Canvas();
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas.setBitmap(bitmap);
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
+
+    //////////////////////////
 
     private void drawRoute(Journey route) {
         List<JourneyLeg> legs = route.getLegs();
@@ -154,7 +275,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
 
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
             //    ActivityCompat#requestPermissions
             // here to request the missing permissions, and then overriding
             //   public void onRequestPermissionsResult(int requestCode, String[] permissions,

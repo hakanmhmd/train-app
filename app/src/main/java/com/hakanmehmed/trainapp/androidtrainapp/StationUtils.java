@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Set;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by hakanmehmed on 11/02/2018.
  */
@@ -16,6 +18,7 @@ import android.util.Log;
 public class StationUtils {
     private static final String TAG = "StationUtils";
     private static HashMap<String, String> stations = null;
+    private static HashMap<String, LatLng> stationLocations = null;
 
     public StationUtils(){
 
@@ -71,7 +74,7 @@ public class StationUtils {
 
     }
 
-    public static void init(Context applicationContext) {
+    static void initStations(Context applicationContext) {
         stations = new HashMap<>();
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(applicationContext.getAssets().open("stations.txt")));
@@ -82,6 +85,34 @@ public class StationUtils {
                 String key = parts[0];
                 String value = parts[1];
                 stations.put(key, value);
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    static LatLng getLatLngFromStationCode(String code){
+        LatLng ll = stationLocations.get(code);
+        if(ll == null){
+            Log.v(TAG, "INVALID STATION");
+        }
+        return ll;
+    }
+
+    static void initStationLocations(Context applicationContext){
+        stationLocations = new HashMap<>();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    applicationContext.getAssets().open("stationlocations.txt")));
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\t+");
+                String key = parts[0];
+                String lon = parts[1];
+                String lat = parts[2];
+                stationLocations.put(key, new LatLng(Double.parseDouble(lat), Double.parseDouble(lon)));
             }
             reader.close();
         } catch (IOException e) {

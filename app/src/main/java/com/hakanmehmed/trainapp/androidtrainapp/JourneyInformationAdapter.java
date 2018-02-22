@@ -204,7 +204,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         String arriveTime = Utils.getArriveTime(currentLeg.getDestination());
         String departTime = Utils.getDepartTime(nextLeg.getOrigin());
 
-        h.setDuration(Utils.getTimeDifference(departTime, arriveTime, false));
+        String timeDifference = Utils.getTimeDifference(departTime, arriveTime, false);
+        h.setDuration(timeDifference);
         h.setStation(currentLeg.getDestination().getStationCode());
     }
 
@@ -243,6 +244,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 //
 //        h.setDuration(bestDepartTime, bestArriveTime);
 
+        // TODO : CHECK THIS
         //h.setCancelled(leg.getCancelled());
         //////////////////////////////////////////////////////////////////////////////
 
@@ -315,7 +317,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                 String platform = "";
                 if(!isEndingStation){
-                    platform = stop.getDeparture().getScheduled().getScheduledPlatform();
+                    platform = (stop.getDeparture().getScheduled() == null) ?
+                            null : stop.getDeparture().getScheduled().getScheduledPlatform();
                     if(platform == null && stop.getDeparture().getRealTime() != null){
                         platform = stop.getDeparture().getRealTime().getRealTimeServiceInfo().getRealTimePlatform();
                     }
@@ -360,18 +363,15 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     //h.setCurrentStation(station, R.string.current_station);
                 }
 
-                if(isEndingStation) continue;
+                if(!isEndingStation) {
+                    Stop nextStop = stops.get(i + 1);
+                    boolean nextArrived = nextStop.getArrival().getRealTime() != null
+                            && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
 
-                Stop nextStop = stops.get(i + 1);
-                boolean nextArrived = nextStop.getArrival().getRealTime() != null
-                        && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
-
-                if(departed && !nextArrived){
-                    progress = nextStop.getLocation().getCrs();
-                    resource = R.string.travelling_to;
-                    //String nextStation = StationUtils.getNameFromStationCode(nextStop.getLocation().getCrs());
-                    //Log.v("Travelling to ", nextStation);
-                    //h.setCurrentStation(nextStation, R.string.travelling_to);
+                    if (departed && !nextArrived) {
+                        progress = nextStop.getLocation().getCrs();
+                        resource = R.string.travelling_to;
+                    }
                 }
 
                 Pair<String, Integer> pair = new Pair<>(progress, resource);
