@@ -104,15 +104,18 @@ public class Utils {
         }
     }
 
-    static boolean isSameTime(String time2String, String time1String) {
+    static boolean isSameTime(String time1String, String time2String) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        if (time2String == null || time1String == null) return false;
+        if (time1String == null || time2String == null) return false;
         try {
             Date time1Date = format.parse(time1String);
             Date time2Date = format.parse(time2String);
             if (time1Date.compareTo(time2Date) == 0) {
                 return true;
             } else {
+                if(!time2Date.after(time1Date)) {
+                    return true;
+                }
                 return false;
             }
         } catch (ParseException e) {

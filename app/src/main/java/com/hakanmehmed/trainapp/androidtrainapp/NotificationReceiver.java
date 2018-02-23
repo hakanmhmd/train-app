@@ -69,6 +69,7 @@ public class NotificationReceiver extends BroadcastReceiver {
 
             subscribed.put(journey.getNotificationId(), journey);
 
+            StationUtils.initStations(context);
             ApiQuery query = JourneyFinderApi.buildApiQuery(
                     StationUtils.getNameFromStationCode(journey.getOrigin()),
                     StationUtils.getNameFromStationCode(journey.getDestination()),
