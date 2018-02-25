@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="16dp">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hardwareAccelerated="false"
+        android:orientation="vertical"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:id="@+id/linearLayout"
+        android:paddingTop="8dp"
+        android:weightSum="1">
+
+        <RelativeLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listItemLayout"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:text="00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/departureTimeTv"
+                android:textColor="@color/colorBlack"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingStart="0dp"
+                android:paddingEnd="16dp"
+                android:layout_alignParentTop="true" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/times_arrow"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="3dp"
+                android:src="@drawable/ic_arrow_24dp"
+                android:scaleType="centerCrop"
+                android:cropToPadding="false"
+                android:clickable="false"
+                android:adjustViewBounds="false"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/departureTimeTv"
+                android:layout_alignBottom="@+id/departureTimeTv" />
+
+            <TextView
+                android:text="00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/arrivalTimeTv"
+                android:textColor="@color/colorBlack"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:paddingStart="0dp"
+                android:paddingEnd="16dp"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/times_arrow" />
+
+            <TextView
+                android:text="XXX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/departureStationTv"
+                android:textColor="@color/colorLightGray"
+                android:layout_below="@+id/departureTimeTv"
+                android:layout_alignParentStart="true"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:text="Platform 0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/departurePlatformTv"
+                android:textColor="@color/colorLightGray"
+                android:layout_below="@+id/departureStationTv"
+                android:layout_alignParentStart="true"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:text="Remind me at 00:00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/remindAtTv"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/colorLightGray"
+                android:layout_below="@+id/departurePlatformTv"
+                android:layout_alignParentStart="true"
+                android:textAllCaps="false" />
+
+            <TextView
+                android:text="XXX"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/arrivalStationTv"
+                android:textColor="@color/colorLightGray"
+                android:layout_below="@+id/times_arrow"
+                android:layout_toEndOf="@+id/times_arrow"
+                android:textStyle="normal|bold" />
+
+            <TextView
+                android:text="Platform 0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/arrivalPlatformTv"
+                android:textColor="@color/colorLightGray"
+                android:layout_below="@+id/arrivalStationTv"
+                android:layout_alignStart="@+id/arrivalStationTv" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0.00"
+            android:background="@android:color/darker_gray"
+            android:layout_height="1.5dp" />
+    </LinearLayout>
+
+
+    <Button
+        android:text="@string/subscribe_text"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/subscribeBtn"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/timeSlider"
+         />
+
+    <TextView
+        android:text="Remind me 0 minutes before departure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/reminderText"
+        android:layout_alignParentStart="true"
+        android:textSize="17sp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/linearLayout"
+        android:padding="8dp" />
+
+    <SeekBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeSlider"
+        android:layout_below="@+id/reminderText"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:padding="8dp"
+        android:max="24"
+        android:progress="0" />
+
+</RelativeLayout>
