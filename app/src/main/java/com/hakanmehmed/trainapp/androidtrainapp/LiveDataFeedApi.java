@@ -42,11 +42,14 @@ public class LiveDataFeedApi {
             .build();
     private final APIClient backendApiClient = backendRetrofit.create(APIClient.class);
 
-    void getLiveData(String trainId, final CustomCallback<LiveDataSearchResponse> callback){
+    void getLiveData(String trainId, String dateString, final CustomCallback<LiveDataSearchResponse> callback){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String now = simpleDateFormat.format(Calendar.getInstance().getTime());
+        String date = simpleDateFormat.format(Calendar.getInstance().getTime());
+        if(dateString != null){
+            date = Utils.formatDate(dateString);
+        }
 
-        Call<LiveDataSearchResponse> backendCall = backendApiClient.backendGetJourneyInfo(trainId, now);
+        Call<LiveDataSearchResponse> backendCall = backendApiClient.backendGetJourneyInfo(trainId, date);
 
         backendCall.enqueue(new Callback<LiveDataSearchResponse>() {
             @Override
@@ -56,7 +59,7 @@ public class LiveDataFeedApi {
             public void onFailure(Call<LiveDataSearchResponse> call, Throwable t) {}
         });
 
-        Call<LiveDataSearchResponse> call = apiClient.getLiveData(trainId, now);
+        Call<LiveDataSearchResponse> call = apiClient.getLiveData(trainId, date);
         call.enqueue(new Callback<LiveDataSearchResponse>() {
             @Override
             public void onResponse(Call<LiveDataSearchResponse> call, Response<LiveDataSearchResponse> response) {

@@ -43,6 +43,21 @@ public class Utils {
         return new SimpleDateFormat("HH:mm").format(cal.getTime());
     }
 
+    static final String formatDate(String date){
+        Date d;
+        try{
+            d = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);
+        } catch(ParseException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(d);
+
+        return new SimpleDateFormat("yyyy-MM-dd").format(cal.getTime());
+    }
+
     static String getCurrentTime(){
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         return df.format(Calendar.getInstance().getTime());

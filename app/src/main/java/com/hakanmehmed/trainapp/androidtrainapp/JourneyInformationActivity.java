@@ -75,7 +75,7 @@ public class JourneyInformationActivity extends AppCompatActivity {
         for(JourneyLeg leg : journey.getLegs()){
 
             final String trainId = leg.getTrainId();
-            Log.v(TAG, "LegViewer " + leg.getTrainId());
+            Log.v(TAG, "leg " + leg.getTrainId());
 
             if(leg.getTransportMode().equals("Walk") || trainId == null){
                 liveDataSearchResponses.add(null);
@@ -83,8 +83,9 @@ public class JourneyInformationActivity extends AppCompatActivity {
             }
 
             String time = journey.getDepartureDateTime();
+            android.util.Log.v(TAG, time);
             // TODO: should i pass time here????
-            api.getLiveData(trainId, new CustomCallback<LiveDataSearchResponse>() {
+            api.getLiveData(trainId, time, new CustomCallback<LiveDataSearchResponse>() {
                 @Override
                 public void onSuccess(Response<LiveDataSearchResponse> response) {
                     liveDataSearchResponses.add(response.body());

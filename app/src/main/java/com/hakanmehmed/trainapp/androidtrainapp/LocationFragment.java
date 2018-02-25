@@ -37,12 +37,14 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.internal.Util;
 import retrofit2.Response;
 
 
@@ -129,7 +131,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 continue;
             }
 
-            api.getLiveData(trainId, new CustomCallback<LiveDataSearchResponse>() {
+            String time = journey.getDepartureDateTime();
+            api.getLiveData(trainId, time, new CustomCallback<LiveDataSearchResponse>() {
                 @Override
                 public void onSuccess(Response<LiveDataSearchResponse> response) {
                     liveDataSearchResponses.add(response.body());
