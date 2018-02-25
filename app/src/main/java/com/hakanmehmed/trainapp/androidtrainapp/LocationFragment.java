@@ -57,8 +57,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     private ArrayList<Journey> subscribedJourneys;
     private LiveDataFeedApi api;
 
-    //@BindView(R.id.floating_search_view)
-    //FloatingSearchView floating_search_view;
     @BindView(R.id.searchRoutes)
     InstantAutoComplete searchRoutes;
 
@@ -118,10 +116,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
 
         return view;
     }
-
-    //////////////////////////
-
-
 
     public void getCurrentLocation(final Journey journey){
         final List<LiveDataSearchResponse> liveDataSearchResponses = new ArrayList<>();
@@ -244,9 +238,6 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-
-
-    //////////////////////////
 
     private void drawRoute(Journey route) {
         List<JourneyLeg> legs = route.getLegs();

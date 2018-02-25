@@ -20,4 +20,10 @@ public interface APIClient {
     @Headers({"X-Api-Version: 1.0.0", "X-Platform-Type: Android", "X-Consumer-Version: 1000"})
     @GET("callingpattern/{trainId}/{date}")
     Call<LiveDataSearchResponse> getLiveData(@Path("trainId") String trainId, @Path("date") String date);
+
+    @POST("getschedule")
+    Call<JourneySearchResponse> backendGetSchedule(@Body ApiQuery apiQuery);
+
+    @GET("getjourneyinfo/{trainId}/{date}")
+    Call<LiveDataSearchResponse> backendGetJourneyInfo(@Path("trainId") String trainId, @Path("date") String date);
 }

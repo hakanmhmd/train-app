@@ -207,7 +207,7 @@ public class SearchJourneyFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable throwable) {
-                Log.d(TAG, "API call failed!");
+                Log.d(TAG, "API call failed! Error: " + throwable.toString());
                 showFailMessage();
             }
         });

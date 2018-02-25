@@ -82,6 +82,8 @@ public class JourneyInformationActivity extends AppCompatActivity {
                 continue;
             }
 
+            String time = journey.getDepartureDateTime();
+            // TODO: should i pass time here????
             api.getLiveData(trainId, new CustomCallback<LiveDataSearchResponse>() {
                 @Override
                 public void onSuccess(Response<LiveDataSearchResponse> response) {
