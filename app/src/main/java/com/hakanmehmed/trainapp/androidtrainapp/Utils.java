@@ -23,6 +23,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by hakanmehmed on 14/02/2018.
+ * Utilities
  */
 
 public class Utils {
@@ -43,7 +44,7 @@ public class Utils {
         return new SimpleDateFormat("HH:mm").format(cal.getTime());
     }
 
-    static final String formatDate(String date){
+    static String formatDate(String date){
         Date d;
         try{
             d = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(date);

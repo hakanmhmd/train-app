@@ -1,11 +1,15 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by hakanmehmed on 20/02/2018.
  */
 
 class DelayReason {
+    @SerializedName("code")
     private int code;
+    @SerializedName("reason")
     private String reason;
 
     public DelayReason(int code, String reason) {

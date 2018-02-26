@@ -9,8 +9,10 @@ import java.util.List;
  */
 
 class JourneySearchResponse {
-    @SerializedName("journeySearchId") private String journeySearchId;
-    @SerializedName("journeys") private List<Journey> journeys;
+    @SerializedName("journeySearchId")
+    private String journeySearchId;
+    @SerializedName("journeys")
+    private List<Journey> journeys;
     // TODO: more fields here
 
     public JourneySearchResponse(String journeySearchId, List<Journey> journeys) {

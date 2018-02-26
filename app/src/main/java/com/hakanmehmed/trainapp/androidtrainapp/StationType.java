@@ -7,12 +7,18 @@ import com.google.gson.annotations.SerializedName;
  */
 
 class StationType {
-    @SerializedName("stationCode") private String stationCode;
-    @SerializedName("scheduledTime") private String scheduledTime;
-    @SerializedName("realTime") private String realTime;
-    @SerializedName("realTimeStatus") private String realTimeStatus;
-    @SerializedName("platform") private String platform;
-    @SerializedName("platformStatus") private String platformStatus;
+    @SerializedName("stationCode")
+    private String stationCode;
+    @SerializedName("scheduledTime")
+    private String scheduledTime;
+    @SerializedName("realTime")
+    private String realTime;
+    @SerializedName("realTimeStatus")
+    private String realTimeStatus;
+    @SerializedName("platform")
+    private String platform;
+    @SerializedName("platformStatus")
+    private String platformStatus;
 
     public StationType(String stationCode, String scheduledTime, String realTime, String realTimeStatus, String platform, String platformStatus) {
         this.stationCode = stationCode;

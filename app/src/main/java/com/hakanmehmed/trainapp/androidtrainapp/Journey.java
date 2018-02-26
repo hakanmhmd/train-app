@@ -9,13 +9,20 @@ import java.util.List;
  */
 
 class Journey {
-    @SerializedName("id") private Integer id;
-    @SerializedName("origin") private String origin;
-    @SerializedName("destination") private String destination;
-    @SerializedName("departureDateTime") private String departureDateTime;
-    @SerializedName("arrivalDateTime") private String arrivalDateTime;
-    @SerializedName("legs") private List<JourneyLeg> legs;
-    @SerializedName("journeyStatus") private String journeyStatus;
+    @SerializedName("id")
+    private Integer id;
+    @SerializedName("origin")
+    private String origin;
+    @SerializedName("destination")
+    private String destination;
+    @SerializedName("departureDateTime")
+    private String departureDateTime;
+    @SerializedName("arrivalDateTime")
+    private String arrivalDateTime;
+    @SerializedName("legs")
+    private List<JourneyLeg> legs;
+    @SerializedName("journeyStatus")
+    private String journeyStatus;
 
     // used for subscriptions
     private Integer reminder;

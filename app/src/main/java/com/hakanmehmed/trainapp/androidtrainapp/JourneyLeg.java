@@ -38,16 +38,25 @@ import com.google.gson.annotations.SerializedName;
  */
 
 class JourneyLeg {
-    @SerializedName("id") private Integer id;
-    @SerializedName("origin") private Origin origin;
-    @SerializedName("destination") private Destination destination;
-    @SerializedName("transportMode") private String transportMode;
-    @SerializedName("reservationFlag") private String reservationFlag;
-    @SerializedName("trainId") private String trainId;
-    @SerializedName("serviceProviderCode") private String serviceProviderCode;
+    @SerializedName("id")
+    private Integer id;
+    @SerializedName("origin")
+    private Origin origin;
+    @SerializedName("destination")
+    private Destination destination;
+    @SerializedName("transportMode")
+    private String transportMode;
+    @SerializedName("reservationFlag")
+    private String reservationFlag;
+    @SerializedName("trainId")
+    private String trainId;
+    @SerializedName("serviceProviderCode")
+    private String serviceProviderCode;
     @SerializedName("serviceProviderName") private String serviceProviderName;
-    @SerializedName("seatingClass") private String seatingClass;
-    @SerializedName("isCancelled") private Boolean isCancelled;
+    @SerializedName("seatingClass")
+    private String seatingClass;
+    @SerializedName("isCancelled")
+    private Boolean isCancelled;
 
     public JourneyLeg(Integer id, Origin origin, Destination destination,
                       String transportMode, String reservationFlag, String trainId,
