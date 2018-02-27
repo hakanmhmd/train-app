@@ -40,7 +40,7 @@ public class UtilsTest {
     @Test
     public void getMillisecondsTest() {
         String time = "2018-02-21T18:33:00+00:00";
-        long result = Utils.getMilliseconds(time);
+        long result = Utils.getSeconds(time);
         long expectedResult = 1519237980;
         long notExpectedResult = 151923798;
 

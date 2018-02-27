@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
+import android.location.Criteria;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -34,17 +36,16 @@ import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.internal.Util;
 import retrofit2.Response;
 
 
@@ -58,6 +59,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     private FragmentActivity myContext;
     private ArrayList<Journey> subscribedJourneys;
     private LiveDataFeedApi api;
+    private LatLng myPosition;
 
     @BindView(R.id.searchRoutes)
     InstantAutoComplete searchRoutes;
@@ -221,6 +223,13 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             );
             startMarkerAnim(marker);
+
+            LatLngBounds.Builder b = new LatLngBounds.Builder();
+            getLocation();
+            b.include(this.myPosition);
+            b.include(marker.getPosition());
+            map.moveCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 150));
+            map.moveCamera(CameraUpdateFactory.zoomTo(map.getCameraPosition().zoom - 0.5f));
         } else {
             Toast.makeText(getContext(), "This journey has not started or has ended.", Toast.LENGTH_LONG).show();
         }
@@ -261,7 +270,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             String dest = StationUtils.getNameFromStationCode(leg.getDestination().getStationCode());
             String deptTime = leg.getOrigin().getScheduledTime();
 
-            String url = getDirectionsURL(origin, dest, Utils.getMilliseconds(deptTime));
+            String url = getDirectionsURL(origin, dest, Utils.getSeconds(deptTime));
             DirectionsData dd = new DirectionsData();
             dd.execute(map, url, this);
         }
@@ -309,6 +318,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
             map.setMyLocationEnabled(true);
+
+            getLocation();
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, MY_LOCATION_PERMISSION_CODE);
@@ -316,6 +327,17 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         }
 
         map.setPadding(0, 18, 0, 0);
+    }
+
+    private void getLocation(){
+        LocationManager locationManager = (LocationManager) myContext.getSystemService(Context.LOCATION_SERVICE);
+        Criteria criteria = new Criteria();
+        android.location.Location location =
+                locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+
+        if (location != null) {
+            this.myPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        }
     }
 
     @Override
@@ -337,11 +359,11 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public String getDirectionsURL(String origin, String dest, long milliseconds) {
+    public String getDirectionsURL(String origin, String dest, long seconds) {
         StringBuilder directions = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         directions.append("origin=").append(origin.replaceAll("\\s", "+")).append(",UK");
         directions.append("&destination=").append(dest.replaceAll("\\s", "+")).append(",UK");
-        directions.append("&departure_time=").append(milliseconds-60000); // one minute before
+        directions.append("&departure_time=").append(seconds-60); // one minute before
         directions.append("&key=AIzaSyB9bCyV8KuYf87ov1r0EBgpdBob8sildxo");
         directions.append("&mode=transit").append("&transit_mode=train");
 

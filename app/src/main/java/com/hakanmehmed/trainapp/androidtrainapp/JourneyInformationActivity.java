@@ -1,5 +1,6 @@
 package com.hakanmehmed.trainapp.androidtrainapp;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
 import retrofit2.Response;
 
 public class JourneyInformationActivity extends AppCompatActivity {
-
+    private final long interval = 60000;
     private static final String TAG = "JourneyInfoActivity";
     @BindView(R.id.journeyInfoLayout)
     RelativeLayout journeyInfoLayout;
@@ -31,6 +32,7 @@ public class JourneyInformationActivity extends AppCompatActivity {
     RecyclerView journeyLegsRv;
 
     private LiveDataFeedApi api;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

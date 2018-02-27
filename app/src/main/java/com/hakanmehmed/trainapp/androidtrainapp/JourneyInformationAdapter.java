@@ -313,7 +313,13 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                         null : (stop.getDeparture().getScheduled() == null) ?
                         null : stop.getDeparture().getScheduled().getScheduledTime();
 
-                String time = departureTime == null ? (arrivalTime == null ? null : arrivalTime) : departureTime;
+                String time;
+                if(station.equals(legArrivalStation)){
+                    time = arrivalTime == null ? (departureTime == null ? null : departureTime) : arrivalTime;
+                } else {
+                    time = departureTime == null ? (arrivalTime == null ? null : arrivalTime) : departureTime;
+                }
+
 
                 String platform = "";
                 if(!isEndingStation){

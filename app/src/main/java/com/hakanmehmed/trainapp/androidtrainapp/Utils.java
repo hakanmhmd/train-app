@@ -64,7 +64,7 @@ public class Utils {
         return df.format(Calendar.getInstance().getTime());
     }
 
-    static long getMilliseconds(String dateString){
+    static long getSeconds(String dateString){
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
             Date date = format.parse(dateString);
@@ -72,6 +72,21 @@ public class Utils {
         } catch (ParseException e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+
+    static boolean isDateAfter(String date, String after){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        if(date == null || after == null) return false;
+
+        try {
+            Date afterDate = format.parse(after);
+            Date dd = format.parse(date);
+
+            return dd.after(afterDate) || dd.compareTo(afterDate) == 0;
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

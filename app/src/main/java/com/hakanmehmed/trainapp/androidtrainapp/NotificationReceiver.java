@@ -92,7 +92,9 @@ public class NotificationReceiver extends BroadcastReceiver {
                 if(journeys == null) return;
                 for(Journey j : journeys){
                     if(j.equals(journey)){
-                        // TODO if this journey had departed
+                        if(Utils.isDateAfter(Utils.getCurrentTime(), journey.getDepartureDateTime())){
+                            break;
+                        }
                         buildNotification(j, journey.getNotificationId(), context);
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -126,22 +128,18 @@ public class NotificationReceiver extends BroadcastReceiver {
         for(int i = 0; i < journey.getLegs().size(); i++){
             JourneyLeg leg = journey.getLegs().get(i);
 
-            /* check if train is cancelled */
             if(leg.getCancelled()){
                 text.append("Train from ")
                         .append(StationUtils.getNameFromStationCode(leg.getOrigin().getStationCode()))
                         .append(" cancelled!");
             }
 
-            /* check if there's a generic "Delayed" with no given expected time */
             if(leg.getOrigin().getRealTimeStatus().equals("Delayed")){
                 text.append("Train from ")
                         .append(StationUtils.getNameFromStationCode(leg.getOrigin().getStationCode()))
                         .append(" is delayed!");
             }
 
-            /* check each train leg delay, will return "" if there is no delay */
-            // TODO: Is this wokring
             String delay = Utils.getTimeDifference(leg.getOrigin().getRealTime(), leg.getOrigin().getScheduledTime(), false);
             if(!delay.equals("")){
                 String prefix = "Train from " + leg.getOrigin().getStationCode() + " is delayed by ";
@@ -173,13 +171,15 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         String lastStatus = journeyStatus.get(savedJourneyId);
-        //TODO does this work
+
         if(lastStatus == null || !lastStatus.equals(text.toString())){
             builder.setVibrate(new long[] { 0, 250, 500, 250 });
             journeyStatus.put(savedJourneyId, text.toString());
 
             // send notification if there is any change of schedule
             notificationManager.notify(journey.getNotificationId(), builder.build());
+        } else {
+            Log.v(TAG, "Nothing has changed.");
         }
     }
 }
