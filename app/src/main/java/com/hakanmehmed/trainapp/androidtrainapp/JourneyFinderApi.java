@@ -41,28 +41,33 @@ public class JourneyFinderApi {
             .build();
     private final APIClient backendApiClient = backendRetrofit.create(APIClient.class);
 
-    void getJourneys(ApiQuery apiQuery, final CustomCallback<JourneySearchResponse> callback){
+    void getJourneys(final ApiQuery apiQuery, final CustomCallback<JourneySearchResponse> callback){
         Call<JourneySearchResponse> backendCall = backendApiClient.backendGetSchedule(apiQuery);
         backendCall.enqueue(new Callback<JourneySearchResponse>() {
-            @Override
-            public void onResponse(Call<JourneySearchResponse> call, Response<JourneySearchResponse> response) {}
-
-            @Override
-            public void onFailure(Call<JourneySearchResponse> call, Throwable t) {}
-        });
-
-        Call<JourneySearchResponse> call = apiClient.getJourneys(apiQuery);
-        call.enqueue(new Callback<JourneySearchResponse>() {
             @Override
             public void onResponse(Call<JourneySearchResponse> call, Response<JourneySearchResponse> response) {
                 callback.onSuccess(response);
             }
 
+            // Fallback to the origin if the server is offline
             @Override
             public void onFailure(Call<JourneySearchResponse> call, Throwable t) {
-                callback.onFailure(t);
+                Call<JourneySearchResponse> newCall = apiClient.getJourneys(apiQuery);
+                newCall.enqueue(new Callback<JourneySearchResponse>() {
+                    @Override
+                    public void onResponse(Call<JourneySearchResponse> call, Response<JourneySearchResponse> response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onFailure(Call<JourneySearchResponse> call, Throwable t) {
+                        callback.onFailure(t);
+                    }
+                });
             }
         });
+
+
     }
 
     static ApiQuery buildApiQuery(String from, String to, String time){

@@ -375,12 +375,14 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
 
                 Pair<String, Integer> pair = new Pair<>(progress, resource);
+                if(station.equals(legArrivalStation)){
+                    shouldAddStop = false;
+                    pair = new Pair<>(null, 0);
+                }
                 StopInfo stopinfo = new StopInfo(station, time, platform, status, service, pair);
                 stopInfo.add(stopinfo);
 
-                if(station.equals(legArrivalStation)){
-                    shouldAddStop = false;
-                }
+
             }
 
 

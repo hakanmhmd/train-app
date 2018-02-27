@@ -112,4 +112,23 @@ public class UtilsTest {
         result = Utils.isSameTime(time1, time2);
         assertEquals(false, result);
     }
+
+    @Test
+    public void isDateBetweenTest(){
+        String date = "2018-02-21T08:20:00+00:00";
+        String before = "2018-02-21T07:33:00+00:00";
+        String after = "2018-02-21T08:21:00+00:00";
+        boolean result = Utils.isDateBetween(date, before, after);
+        assertEquals(true, result);
+
+        after = "2018-02-21T08:19:00+00:00";
+        result = Utils.isDateBetween(date, before, after);
+        assertEquals(false, result);
+
+        before = "2018-02-21T08:20:00+00:00";
+        after = "2018-02-21T08:21:00+00:00";
+        result = Utils.isDateBetween(date, before, after);
+        assertEquals(true, result);
+
+    }
 }

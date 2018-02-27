@@ -73,7 +73,23 @@ public class Utils {
             e.printStackTrace();
             return 0;
         }
+    }
 
+    static boolean isDateBetween(String date, String before, String after){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        if(date == null || before == null || after == null) return false;
+
+        try {
+            Date beforeDate = format.parse(before);
+            Date afterDate = format.parse(after);
+            Date dd = format.parse(date);
+
+            return ((dd.after(beforeDate) && dd.before(afterDate)) || dd.compareTo(beforeDate) == 0
+                    || dd.compareTo(afterDate) == 0);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     static String getTimeDifference(String time1String, String time2String, boolean shorten) {

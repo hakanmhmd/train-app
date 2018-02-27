@@ -123,11 +123,18 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         final List<LiveDataSearchResponse> liveDataSearchResponses = new ArrayList<>();
 
         for(JourneyLeg leg : journey.getLegs()){
-
             final String trainId = leg.getTrainId();
 
             if(leg.getTransportMode().equals("Walk") || trainId == null){
                 liveDataSearchResponses.add(null);
+                continue;
+            }
+
+            // if this is not the current leg, continue
+            String currentTime = Utils.getCurrentTime();
+            String originScheduledTime = leg.getOrigin().getScheduledTime();
+            String destScheduledTime = leg.getDestination().getScheduledTime();
+            if(!Utils.isDateBetween(currentTime, originScheduledTime, destScheduledTime)){
                 continue;
             }
 
@@ -136,11 +143,11 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onSuccess(Response<LiveDataSearchResponse> response) {
                     liveDataSearchResponses.add(response.body());
-
-                    if(liveDataSearchResponses.size() == journey.getLegs().size()){
+                    if(liveDataSearchResponses.size() == 1){
                         putOnMap(journey, liveDataSearchResponses);
                     }
                 }
+
 
                 @Override
                 public void onFailure(Throwable throwable) {
@@ -148,6 +155,8 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 }
             });
         }
+
+
     }
 
     private void putOnMap(Journey journey, List<LiveDataSearchResponse> liveDataSearchResponses) {
@@ -190,15 +199,18 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
 
                     String nextStation = nextStop.getLocation().getCrs();
                     if (departed && !nextArrived) {
+
                         //between station and nextStation
                         currentStation = station;
                         message = "Travelling between " + StationUtils.getNameFromStationCode(station)
                                 + " and " + StationUtils.getNameFromStationCode(nextStation);
+
                     }
                 }
             }
         }
 
+        Log.v(TAG, message);
         LatLng ll = StationUtils.getLatLngFromStationCode(currentStation);
         if(ll != null){
             Marker marker = map.addMarker(new MarkerOptions()

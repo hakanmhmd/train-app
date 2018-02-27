@@ -42,25 +42,17 @@ public class LiveDataFeedApi {
             .build();
     private final APIClient backendApiClient = backendRetrofit.create(APIClient.class);
 
-    void getLiveData(String trainId, String dateString, final CustomCallback<LiveDataSearchResponse> callback){
+    void getLiveData(final String trainId, final String dateString, final CustomCallback<LiveDataSearchResponse> callback){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = simpleDateFormat.format(Calendar.getInstance().getTime());
         if(dateString != null){
             date = Utils.formatDate(dateString);
         }
 
-        Call<LiveDataSearchResponse> backendCall = backendApiClient.backendGetJourneyInfo(trainId, date);
+        final String d = date;
 
+        Call<LiveDataSearchResponse> backendCall = backendApiClient.backendGetJourneyInfo(trainId, d);
         backendCall.enqueue(new Callback<LiveDataSearchResponse>() {
-            @Override
-            public void onResponse(Call<LiveDataSearchResponse> call, Response<LiveDataSearchResponse> response) {}
-
-            @Override
-            public void onFailure(Call<LiveDataSearchResponse> call, Throwable t) {}
-        });
-
-        Call<LiveDataSearchResponse> call = apiClient.getLiveData(trainId, date);
-        call.enqueue(new Callback<LiveDataSearchResponse>() {
             @Override
             public void onResponse(Call<LiveDataSearchResponse> call, Response<LiveDataSearchResponse> response) {
                 callback.onSuccess(response);
@@ -68,8 +60,21 @@ public class LiveDataFeedApi {
 
             @Override
             public void onFailure(Call<LiveDataSearchResponse> call, Throwable t) {
-                callback.onFailure(t);
+                Call<LiveDataSearchResponse> newCall = apiClient.getLiveData(trainId, d);
+                newCall.enqueue(new Callback<LiveDataSearchResponse>() {
+                    @Override
+                    public void onResponse(Call<LiveDataSearchResponse> call, Response<LiveDataSearchResponse> response) {
+                        callback.onSuccess(response);
+                    }
+
+                    @Override
+                    public void onFailure(Call<LiveDataSearchResponse> call, Throwable t) {
+                        callback.onFailure(t);
+                    }
+                });
             }
         });
+
+
     }
 }

@@ -92,6 +92,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 if(journeys == null) return;
                 for(Journey j : journeys){
                     if(j.equals(journey)){
+                        // TODO if this journey had departed
                         buildNotification(j, journey.getNotificationId(), context);
                         handler.postDelayed(new Runnable() {
                             @Override
