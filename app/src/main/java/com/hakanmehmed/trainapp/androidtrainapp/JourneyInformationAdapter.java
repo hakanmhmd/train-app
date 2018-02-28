@@ -90,9 +90,6 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            //green_circle.setVisibility(GONE);
-            //legCurrentStationTv.setVisibility(GONE);
-
             listView.setHasFixedSize(true);
             listView.setLayoutManager(new LinearLayoutManager(context));
         }
@@ -100,77 +97,6 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public void setViewAdapter(ArrayList<StopInfo> info) {
             listView.setAdapter(new LegInformationListViewAdapter(context, info));
         }
-
-//        public void setArrival(String time, String station){
-//            legArrivalTv.setText(time);
-//            legArrivalStationTv.setText(StationUtils.getNameFromStationCode(station));
-//        }
-//
-//        public void setDeparture(String time, String station, String platform){
-//            legDepartureTv.setText(time);
-//            legDepartureStationTv.setText(StationUtils.getNameFromStationCode(station));
-//
-//            if(platform != null && !platform.isEmpty()){
-//                legDeparturePlatformTv.setText(context.getString(R.string.platform, platform));
-//            } else {
-//                legDeparturePlatformTv.setVisibility(GONE);
-//            }
-//        }
-//
-//        public void setOperatingCompany(String company){
-//            legOperatingCompanyTv.setText(company);
-//        }
-
-//        public void setCancelled(boolean cancelled){
-//            if(!cancelled) return;
-//
-//            setArriveStatus("Cancelled");
-//            setDepartStatus("Cancelled");
-//
-//            int colour = ContextCompat.getColor(context, R.color.colorDarkGray);
-//            legDepartureTv.setTextColor(colour);
-//            legDepartureStationTv.setTextColor(colour);
-//            legCurrentStationTv.setTextColor(colour);
-//            legOperatingCompanyTv.setTextColor(colour);
-//            legDeparturePlatformTv.setTextColor(colour);
-//            legDepartureStatusTv.setTextColor(colour);
-//            legArrivalStatus.setTextColor(colour);
-//            legArrivalTv.setTextColor(colour);
-//            legArrivalStationTv.setTextColor(colour);
-//            legDurationTv.setTextColor(colour);
-//        }
-
-//        public void setArriveStatus(String status){
-//            if(status.equals("On time")){
-//                legArrivalStatus.setTextColor(ContextCompat.getColor(context, R.color.colorDarkGray));
-//            } else {
-//                legArrivalStatus.setTextColor(ContextCompat.getColor(context, R.color.red));
-//            }
-//            legArrivalStatus.setText(status);
-//        }
-//
-//        public void setDepartStatus(String status){
-//            /* if the train is not on time, change the text color to red */
-//            if(status.equals("On time")){
-//                legDepartureStatusTv.setTextColor(ContextCompat.getColor(context, R.color.colorDarkGray));
-//            } else {
-//                legDepartureStatusTv.setTextColor(ContextCompat.getColor(context, R.color.red));
-//            }
-//            legDepartureStatusTv.setText(status);
-//        }
-
-//        public void setCurrentStation(String station, int stringResource){
-//            legCurrentStationTv.setVisibility(VISIBLE);
-//            legCurrentStationTv.setText(context.getString(stringResource, station));
-//
-//            green_circle.setAlpha(0.f);
-//            green_circle.setVisibility(View.VISIBLE);
-//            green_circle.animate().setDuration(1000).setInterpolator(new LinearInterpolator()).alpha(1.f).start();
-//        }
-//
-//        public void setDuration(String departTime, String arriveTime){
-//            legDurationTv.setText(Utils.getTimeDifference(arriveTime, departTime, false));
-//        }
     }
 
     @Override
@@ -214,46 +140,36 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
         JourneyLeg leg = journey.getLegs().get(position / 2);
 
-        //////////////////////////////////////////////////////////////////////////////
-//        String departTime = Utils.formatTime(leg.getOrigin().getScheduledTime());
-//        String departStation = leg.getOrigin().getStationCode();
-//        String departPlatform = leg.getOrigin().getPlatform();
-//        h.setDeparture(departTime, departStation, departPlatform);
-//
-//        String arriveTime = Utils.formatTime(leg.getDestination().getScheduledTime());
-//        String arriveStation = leg.getDestination().getStationCode();
-//        h.setArrival(arriveTime, arriveStation);
-//
-//
-//        h.setOperatingCompany(transportModeIsTrain ? leg.getServiceProviderName() : leg.getTransportMode());
-//
-//        String bestArriveTime = Utils.getArriveTime(leg.getDestination());
-//        String bestDepartTime = Utils.getDepartTime(leg.getOrigin());
-//
-//        if(leg.getOrigin().getRealTime() == null){
-//            h.setDepartStatus("On time");
-//        } else {
-//            h.setDepartStatus("Exp " + Utils.formatTime(bestDepartTime));
-//        }
-//
-//        if(leg.getDestination().getRealTime() == null){
-//            h.setArriveStatus("On time");
-//        } else {
-//            h.setArriveStatus("Exp " + Utils.formatTime(bestArriveTime));
-//        }
-//
-//        h.setDuration(bestDepartTime, bestArriveTime);
-
-        // TODO : CHECK THIS
-        //h.setCancelled(leg.getCancelled());
-        //////////////////////////////////////////////////////////////////////////////
-
         if(legInfo == null) {
             return;
         }
+
         boolean transportModeIsTrain = leg.getTransportMode().equals("Train");
         String departStation = leg.getOrigin().getStationCode();
         String arriveStation = leg.getDestination().getStationCode();
+
+        if(leg.getCancelled()){
+            ArrayList<StopInfo> stopInfo = new ArrayList<>();
+            StopInfo departureInfo = new StopInfo(departStation,
+                    leg.getOrigin().getScheduledTime(),
+                    null,
+                    "Cancelled",
+                    transportModeIsTrain ? leg.getServiceProviderName() : leg.getTransportMode(),
+                    new Pair<String, Integer>(null ,null));
+
+            StopInfo arrivalInfo = new StopInfo(arriveStation,
+                    leg.getDestination().getScheduledTime(),
+                    null,
+                    "Cancelled",
+                    "",
+                    new Pair<String, Integer>(null ,null));
+
+            stopInfo.add(departureInfo);
+            stopInfo.add(arrivalInfo);
+
+            h.setViewAdapter(stopInfo);
+            return;
+        }
 
         // When the connection is via bus or tube, legInfo does not exist
         if(legInfo.get(leg.getTrainId()) == null){
@@ -325,7 +241,8 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if(!isEndingStation){
                     platform = (stop.getDeparture().getScheduled() == null) ?
                             null : stop.getDeparture().getScheduled().getScheduledPlatform();
-                    if(platform == null && stop.getDeparture().getRealTime() != null){
+                    if(platform == null && stop.getDeparture().getRealTime() != null &&
+                            stop.getDeparture().getRealTime().getRealTimeServiceInfo() != null){
                         platform = stop.getDeparture().getRealTime().getRealTimeServiceInfo().getRealTimePlatform();
                     }
                 }
@@ -343,6 +260,12 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if(stop.getDeparture().getRealTime() != null
                         && stop.getDeparture().getRealTime().getDelayReason() != null){
                     status = "Delayed";
+                }
+
+                if(stop.getDeparture().getRealTime() != null
+                        && stop.getDeparture().getRealTime().getCancelled() != null
+                        && stop.getDeparture().getRealTime().getCancelled().isCancelled()){
+                    status = "Cancelled";
                 }
 
                 String service = null;
@@ -366,7 +289,6 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     //Log.v("Currently at", station);
                     progress = station;
                     resource = R.string.current_station;
-                    //h.setCurrentStation(station, R.string.current_station);
                 }
 
                 if(!isEndingStation) {

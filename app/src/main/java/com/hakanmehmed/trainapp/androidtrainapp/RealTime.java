@@ -7,10 +7,12 @@ package com.hakanmehmed.trainapp.androidtrainapp;
 class RealTime {
     private RealTimeServiceInfo realTimeServiceInfo;
     private DelayReason delayReason;
+    private Cancelled cancelled;
 
-    public RealTime(RealTimeServiceInfo realTimeServiceInfo, DelayReason delayReason) {
+    public RealTime(RealTimeServiceInfo realTimeServiceInfo, DelayReason delayReason, Cancelled cancelled) {
         this.realTimeServiceInfo = realTimeServiceInfo;
         this.delayReason = delayReason;
+        this.cancelled = cancelled;
     }
 
     public RealTimeServiceInfo getRealTimeServiceInfo() {
@@ -29,6 +31,14 @@ class RealTime {
         this.delayReason = delayReason;
     }
 
+    public Cancelled getCancelled() {
+        return cancelled;
+    }
+
+    public void setCancelled(Cancelled cancelled) {
+        this.cancelled = cancelled;
+    }
+
     @Override
     public String toString() {
         return "RealTime{" +
@@ -36,4 +46,6 @@ class RealTime {
                 ", delayReason=" + delayReason +
                 '}';
     }
+
+
 }
