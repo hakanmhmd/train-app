@@ -111,7 +111,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView departurePlatformTv;
 
         @BindView(R.id.times_arrow)
-        ImageView arrow; //TODO: FIX ARROW
+        ImageView arrow;
 
         @BindView(R.id.arrivalTimeTv)
         TextView arrivalTimeTv;

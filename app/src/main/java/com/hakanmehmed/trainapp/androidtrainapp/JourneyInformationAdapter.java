@@ -248,7 +248,15 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 }
 
                 String status = "On time";
-                if(stop.getDeparture().getRealTime() != null && departureTime != null){
+
+                if(stop.getDeparture().getRealTime() != null
+                        && stop.getDeparture().getRealTime().getCancelled() != null
+                        && stop.getDeparture().getRealTime().getCancelled().isCancelled()){
+                    status = "Cancelled";
+                }
+
+                if(stop.getDeparture().getRealTime() != null && stop.getDeparture().getRealTime().getRealTimeServiceInfo() != null
+                        && departureTime != null){
                     String realTime = stop.getDeparture().getRealTime().getRealTimeServiceInfo().getRealTime();
                     if(realTime != null) {
                         if (!Utils.isSameTime(departureTime, realTime)) {
@@ -262,12 +270,6 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                     status = "Delayed";
                 }
 
-                if(stop.getDeparture().getRealTime() != null
-                        && stop.getDeparture().getRealTime().getCancelled() != null
-                        && stop.getDeparture().getRealTime().getCancelled().isCancelled()){
-                    status = "Cancelled";
-                }
-
                 String service = null;
                 if(firstStop){
                     firstStop = false;
@@ -278,9 +280,11 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
 
                 boolean arrived = isStartingStation || (stop.getArrival().getRealTime() != null
+                        && stop.getArrival().getRealTime().getRealTimeServiceInfo() != null
                         && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived());
 
                 boolean departed = isEndingStation || (stop.getDeparture().getRealTime() != null
+                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo() != null
                         && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
 
                 String progress = null;
@@ -294,6 +298,7 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if(!isEndingStation) {
                     Stop nextStop = stops.get(i + 1);
                     boolean nextArrived = nextStop.getArrival().getRealTime() != null
+                            && nextStop.getArrival().getRealTime().getRealTimeServiceInfo() != null
                             && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
 
                     if (departed && !nextArrived) {

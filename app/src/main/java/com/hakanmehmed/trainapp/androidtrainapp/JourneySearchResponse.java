@@ -13,7 +13,6 @@ class JourneySearchResponse {
     private String journeySearchId;
     @SerializedName("journeys")
     private List<Journey> journeys;
-    // TODO: more fields here
 
     public JourneySearchResponse(String journeySearchId, List<Journey> journeys) {
         this.journeySearchId = journeySearchId;

@@ -16,13 +16,9 @@ class ApiQuery {
     @SerializedName("journeyType") private String journeyType; // different types
     @SerializedName("outboundJourney") private OutboundJourney outboundJourney;
     @SerializedName("showCancelledTrains") private Boolean showCancelledTrains;
-    //TODO: more fields
 
     public ApiQuery() {
     }
-
-    // TODO: Check which inputs can be dismissed here
-
 
     public ApiQuery(Integer adults, Integer children, String origin, String destination, String journeyType, Boolean showCancelledTrains) {
         this.adults = adults;

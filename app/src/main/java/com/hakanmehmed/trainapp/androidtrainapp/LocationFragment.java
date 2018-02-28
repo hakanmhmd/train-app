@@ -132,20 +132,13 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 continue;
             }
 
-            // if this is not the current leg, continue
-            String currentTime = Utils.getCurrentTime();
-            String originScheduledTime = leg.getOrigin().getScheduledTime();
-            String destScheduledTime = leg.getDestination().getScheduledTime();
-            if(!Utils.isDateBetween(currentTime, originScheduledTime, destScheduledTime)){
-                continue;
-            }
-
             String time = journey.getDepartureDateTime();
             api.getLiveData(trainId, time, new CustomCallback<LiveDataSearchResponse>() {
                 @Override
                 public void onSuccess(Response<LiveDataSearchResponse> response) {
-                    liveDataSearchResponses.add(response.body());
-                    if(liveDataSearchResponses.size() == 1){
+                    LiveDataSearchResponse resp = response.body();
+                    liveDataSearchResponses.add(resp);
+                    if(liveDataSearchResponses.size() == journey.getLegs().size()){
                         putOnMap(journey, liveDataSearchResponses);
                     }
                 }
@@ -170,26 +163,34 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             legInfo.put(trainId, train);
         }
 
+        String destination = journey.getDestination();
+
         String currentStation = "";
         String message = "";
+        ArrayList<Marker> markers = new ArrayList<>();
         for (String trainId : legInfo.keySet()) {
             LiveDataSearchResponse data = legInfo.get(trainId);
             List<Stop> stops = data.getService().getStops();
             for (int i = 0; i < stops.size(); i++) {
                 Stop stop = stops.get(i);
                 String station = stop.getLocation().getCrs();
+                if(station.equals(destination)){
+                    break;
+                }
                 boolean isStartingStation = stop.getArrival().getNotApplicable() != null
                         && stop.getArrival().getNotApplicable();
                 boolean isEndingStation = stop.getDeparture().getNotApplicable() != null
                         && stop.getDeparture().getNotApplicable();
 
                 boolean arrived = isStartingStation || (stop.getArrival().getRealTime() != null
+                        && stop.getArrival().getRealTime().getRealTimeServiceInfo() != null
                         && stop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived());
 
                 boolean departed = isEndingStation || (stop.getDeparture().getRealTime() != null
+                        && stop.getDeparture().getRealTime().getRealTimeServiceInfo() != null
                         && stop.getDeparture().getRealTime().getRealTimeServiceInfo().getHasDeparted());
 
-                if(arrived && !departed && !isStartingStation && !isEndingStation){
+                if(arrived && !departed && !isStartingStation){
                     currentStation = station;
                     message = "Currently at " + StationUtils.getNameFromStationCode(station);
                 }
@@ -197,6 +198,7 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                 if(!isEndingStation) {
                     Stop nextStop = stops.get(i + 1);
                     boolean nextArrived = nextStop.getArrival().getRealTime() != null
+                            && nextStop.getArrival().getRealTime().getRealTimeServiceInfo() != null
                             && nextStop.getArrival().getRealTime().getRealTimeServiceInfo().getHasArrived();
 
                     String nextStation = nextStop.getLocation().getCrs();
@@ -210,24 +212,30 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
                     }
                 }
             }
+
+            LatLng ll = StationUtils.getLatLngFromStationCode(currentStation);
+            if(ll != null) {
+                Marker marker = map.addMarker(new MarkerOptions()
+                        .title(journey.getOrigin() + " to " + journey.getDestination())
+                        .snippet(message)
+                        .draggable(false)
+                        .position(ll)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                );
+                markers.add(marker);
+            }
+
         }
 
-        Log.v(TAG, message);
-        LatLng ll = StationUtils.getLatLngFromStationCode(currentStation);
-        if(ll != null){
-            Marker marker = map.addMarker(new MarkerOptions()
-                            .title(journey.getOrigin() + " to " + journey.getDestination())
-                            .snippet(message)
-                            .draggable(false)
-                            .position(ll)
-                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-            );
-            startMarkerAnim(marker);
-
+        if(markers.size() != 0){
+            Log.v(TAG, message);
             LatLngBounds.Builder b = new LatLngBounds.Builder();
-            getLocation();
             b.include(this.myPosition);
-            b.include(marker.getPosition());
+            getLocation();
+            for (Marker marker : markers) {
+                b.include(marker.getPosition());
+                startMarkerAnim(marker);
+            }
             map.moveCamera(CameraUpdateFactory.newLatLngBounds(b.build(), 150));
             map.moveCamera(CameraUpdateFactory.zoomTo(map.getCameraPosition().zoom - 0.5f));
         } else {

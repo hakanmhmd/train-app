@@ -14,7 +14,6 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity  {
     private static final String TAG = "MainActivity";
-    // TODO: change colors of layouts
 
     @BindView(R.id.main_nav)
     BottomNavigationView main_nav;

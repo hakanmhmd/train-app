@@ -111,7 +111,6 @@ class Journey {
         return notificationId;
     }
 
-    // TODO: DOUBLE CHECK THIS
     @Override
     public boolean equals(Object obj) {
         Journey other = null;

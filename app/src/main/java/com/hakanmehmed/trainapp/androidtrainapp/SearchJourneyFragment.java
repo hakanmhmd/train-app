@@ -154,7 +154,6 @@ public class SearchJourneyFragment extends Fragment {
 
         String errorMsg = StationUtils.isInputValid(from, to);
         if(errorMsg != null){
-            // TODO: pop up dialog instead of toast
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                 .setCancelable(false)
                 .setTitle(R.string.cant_proceed)

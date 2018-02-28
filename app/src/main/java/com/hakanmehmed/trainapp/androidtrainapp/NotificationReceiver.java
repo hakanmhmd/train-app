@@ -39,7 +39,6 @@ public class NotificationReceiver extends BroadcastReceiver {
             }
             Log.v(TAG, "Reboot setup.");
         } else {
-            // TODO: API 18 makes notifications exact - decide what to use
             if(notificationManager == null) {
                 notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             }
@@ -93,6 +92,7 @@ public class NotificationReceiver extends BroadcastReceiver {
                 for(Journey j : journeys){
                     if(j.equals(journey)){
                         if(Utils.isDateAfter(Utils.getCurrentTime(), journey.getDepartureDateTime())){
+                            Log.v(TAG, "Stopped notification for " + journey.getNotificationId());
                             break;
                         }
                         buildNotification(j, journey.getNotificationId(), context);
@@ -171,7 +171,8 @@ public class NotificationReceiver extends BroadcastReceiver {
                 .setAutoCancel(true);
 
         String lastStatus = journeyStatus.get(savedJourneyId);
-
+        Log.v(TAG, "Current status " + text.toString());
+        Log.v(TAG, "Last status " + lastStatus);
         if(lastStatus == null || !lastStatus.equals(text.toString())){
             builder.setVibrate(new long[] { 0, 250, 500, 250 });
             journeyStatus.put(savedJourneyId, text.toString());
