@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -43,7 +44,7 @@ public class JourneyInformationActivity extends AppCompatActivity {
         api = new LiveDataFeedApi();
 
         Journey journey = Utils.jsonToJourney(getIntent().getStringExtra("journey"));
-        getLiveDataFeed(journey);
+
 
         String departStation = StationUtils.getNameFromStationCode(journey.getOrigin());
         String arriveStation = StationUtils.getNameFromStationCode(journey.getDestination());
@@ -67,8 +68,7 @@ public class JourneyInformationActivity extends AppCompatActivity {
         LayoutAnimationController animation =
                 AnimationUtils.loadLayoutAnimation(getApplicationContext(), R.anim.layout_animation_fall_down);
         journeyLegsRv.setLayoutAnimation(animation);
-        journeyLegsRv.setAdapter(new JourneyInformationAdapter(journey, null, getApplicationContext(), this));
-
+        getLiveDataFeed(journey);
     }
 
     public void getLiveDataFeed(final Journey journey){
@@ -112,7 +112,6 @@ public class JourneyInformationActivity extends AppCompatActivity {
             String trainId = train.getService().getServiceUid();
             legInfo.put(trainId, train);
         }
-
 
         journeyLegsRv.setAdapter(new JourneyInformationAdapter(journey, legInfo, getApplicationContext(), this));
         journeyLegsRv.invalidate();

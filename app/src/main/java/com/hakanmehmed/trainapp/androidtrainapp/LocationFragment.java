@@ -277,8 +277,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
             String origin = StationUtils.getNameFromStationCode(leg.getOrigin().getStationCode());
             String dest = StationUtils.getNameFromStationCode(leg.getDestination().getStationCode());
             String deptTime = leg.getOrigin().getScheduledTime();
+            String arrTime = leg.getDestination().getScheduledTime();
 
-            String url = getDirectionsURL(origin, dest, Utils.getSeconds(deptTime));
+            String url = getDirectionsURL(origin, dest, Utils.getSeconds(deptTime), Utils.getSeconds(arrTime));
             DirectionsData dd = new DirectionsData();
             dd.execute(map, url, this);
         }
@@ -367,11 +368,12 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
     }
 
 
-    public String getDirectionsURL(String origin, String dest, long seconds) {
+    public String getDirectionsURL(String origin, String dest, long deptSec, long arrSec) {
         StringBuilder directions = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         directions.append("origin=").append(origin.replaceAll("\\s", "+")).append(",UK");
         directions.append("&destination=").append(dest.replaceAll("\\s", "+")).append(",UK");
-        directions.append("&departure_time=").append(seconds-60); // one minute before
+        directions.append("&departure_time=").append(deptSec-60); // one minute before
+        directions.append("&arrival_time=").append(arrSec+60); // one minute after
         directions.append("&key=AIzaSyB9bCyV8KuYf87ov1r0EBgpdBob8sildxo");
         directions.append("&mode=transit").append("&transit_mode=train");
 
