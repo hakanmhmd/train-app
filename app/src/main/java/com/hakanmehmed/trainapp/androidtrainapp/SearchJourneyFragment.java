@@ -9,6 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import butterknife.OnFocusChange;
 import retrofit2.Response;
 
 import static android.view.View.GONE;
@@ -71,24 +71,27 @@ public class SearchJourneyFragment extends Fragment {
     @BindView(R.id.searchResults)
     RecyclerView searchResults;
 
+    private static boolean showingResults = false;
 
-
-    @OnClick(R.id.reverseIcon) void iconPressed() {
+    @OnClick(R.id.reverseIcon)
+    void iconPressed() {
         swapSearchInputTextField();
     }
-    
-    @OnClick(R.id.searchButton) void buttonPressed(){
+
+    @OnClick(R.id.searchButton)
+    void buttonPressed() {
         findTrains(Utils.getCurrentTime());
     }
 
     private JourneyFinderApi api;
     private View view;
+    private FragmentActivity activity;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        if(view == null) {
+        if (view == null) {
             view = inflater.inflate(R.layout.fragment_search_journey, container, false);
 
             ButterKnife.bind(this, view);
@@ -99,11 +102,11 @@ public class SearchJourneyFragment extends Fragment {
             ArrayAdapter<String> adapter = new ArrayAdapter<>(view.getContext(),
                     android.R.layout.simple_dropdown_item_1line, stations);
 
-            final FragmentActivity activity = getActivity();
+            activity = getActivity();
             to_station.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
-                    if(hasFocus) to_station.setText("");
+                    if (hasFocus) to_station.setText("");
                     else hideKeyboard();
                 }
             });
@@ -111,7 +114,7 @@ public class SearchJourneyFragment extends Fragment {
             from_station.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
-                    if(hasFocus) from_station.setText("");
+                    if (hasFocus) from_station.setText("");
                     else hideKeyboard();
                 }
             });
@@ -129,7 +132,30 @@ public class SearchJourneyFragment extends Fragment {
             recentSearches.setLayoutManager(new LinearLayoutManager(getContext()));
 
             showRecentSearches();
+
         }
+
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (!showingResults) {
+                            activity.finish();
+                        } else {
+                            recentSearchesLayout.setVisibility(VISIBLE);
+                            showRecentSearches();
+                            showingResults = false;
+                        }
+
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         return view;
     }
@@ -137,7 +163,7 @@ public class SearchJourneyFragment extends Fragment {
     private void showRecentSearches() {
         ArrayList<RecentSearch> searches = Utils.getSearches(getContext());
 
-        if(searches == null || searches.size() == 0){
+        if (searches == null || searches.size() == 0) {
             noRecentSearchTv.setVisibility(View.VISIBLE);
             recentSearches.setVisibility(View.GONE);
         } else {
@@ -145,24 +171,26 @@ public class SearchJourneyFragment extends Fragment {
             noRecentSearchTv.setVisibility(View.GONE);
             recentSearches.setVisibility(View.VISIBLE);
             recentSearches.setAdapter(new RecentSearchAdapter(searches, getContext(), this));
+
         }
     }
+
 
     private void findTrains(String time) {
         String from = from_station.getText().toString();
         String to = to_station.getText().toString();
 
         String errorMsg = StationUtils.isInputValid(from, to);
-        if(errorMsg != null){
+        if (errorMsg != null) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
-                .setCancelable(false)
-                .setTitle(R.string.cant_proceed)
-                .setMessage(errorMsg)
-                .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                    .setCancelable(false)
+                    .setTitle(R.string.cant_proceed)
+                    .setMessage(errorMsg)
+                    .setPositiveButton(R.string.dismiss, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
             AlertDialog ad = builder.create();
             ad.show();
 
@@ -173,6 +201,8 @@ public class SearchJourneyFragment extends Fragment {
         Utils.saveSearch(from, to, getContext());
 
         recentSearchesLayout.setVisibility(GONE);
+        recentSearches.setVisibility(GONE);
+        searchResults.setVisibility(GONE);
         progressBar.setVisibility(VISIBLE);
         loadingTvBig.setVisibility(VISIBLE);
         loadingTvBig.setText(R.string.finding_trains_text);
@@ -180,7 +210,7 @@ public class SearchJourneyFragment extends Fragment {
         getTrains(from, to, time);
     }
 
-    void performNewSearch(String time){
+    void performNewSearch(String time) {
         findTrains(time);
     }
 
@@ -213,6 +243,7 @@ public class SearchJourneyFragment extends Fragment {
     }
 
     private void showTrains(JourneySearchResponse response) {
+        resultsLayout.setVisibility(VISIBLE);
         searchResults.setVisibility(VISIBLE);
         progressBar.setVisibility(GONE);
         loadingTvBig.setVisibility(GONE);
@@ -225,9 +256,10 @@ public class SearchJourneyFragment extends Fragment {
                 AnimationUtils.loadLayoutAnimation(getContext(), R.anim.layout_animation_fall_down);
         searchResults.setLayoutAnimation(animation);
         searchResults.setAdapter(new SearchJourneyAdapter(results, getContext(), this));
+        showingResults = true;
     }
 
-    void displayJourneyInfo(final Journey thisJourney){
+    void displayJourneyInfo(final Journey thisJourney) {
         final CustomSearchResultAlertDialog customSearchResultAlertDialog =
                 new CustomSearchResultAlertDialog(getActivity());
 
@@ -253,7 +285,7 @@ public class SearchJourneyFragment extends Fragment {
         loadingTvSmall.setText(R.string.connection_error_message);
     }
 
-    public void swapSearchInputTextField(){
+    public void swapSearchInputTextField() {
         String from = from_station.getText().toString();
         String to = to_station.getText().toString();
 
