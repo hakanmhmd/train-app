@@ -258,11 +258,12 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             }
 
             String status = "On time";
-
+            boolean cancelled = false;
             if (departure != null && departure.getRealTime() != null
                     && departure.getRealTime().getCancelled() != null
                     && departure.getRealTime().getCancelled().isCancelled()) {
                 status = "Cancelled";
+                cancelled = true;
             }
 
             if (departure != null && departure.getRealTime() != null
@@ -302,12 +303,12 @@ class JourneyInformationAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
             String progress = null;
             int resource = 0;
-            if (arrived && !departed && !isStartingStation && !isEndingStation) {
+            if (arrived && !departed && !isStartingStation && !isEndingStation && !cancelled) {
                 progress = station;
                 resource = R.string.current_station;
             }
 
-            if (!isEndingStation) {
+            if (!isEndingStation && !cancelled) {
                 Stop nextStop = stops.get(i + 1);
                 boolean nextArrived = nextStop.getArrival() != null && nextStop.getArrival().getRealTime() != null
                         && nextStop.getArrival().getRealTime().getRealTimeServiceInfo() != null
