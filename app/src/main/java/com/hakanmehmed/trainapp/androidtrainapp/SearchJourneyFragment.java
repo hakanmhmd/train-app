@@ -120,8 +120,8 @@ public class SearchJourneyFragment extends Fragment {
             });
 
             // Auto-completion functionality for the two fields
-            to_station.setPaintFlags(INVISIBLE);
-            from_station.setPaintFlags(INVISIBLE);
+            to_station.setPaintFlags(0);
+            from_station.setPaintFlags(0);
             to_station.setAdapter(adapter);
             from_station.setAdapter(adapter);
 

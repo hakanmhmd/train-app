@@ -23,6 +23,7 @@ import java.net.URL;
  */
 
 class DirectionsData extends AsyncTask<Object, String, String>{
+    private static final String TAG = "DirectionsData";
     private String url;
     private GoogleMap map;
     private String directions;
@@ -67,6 +68,8 @@ class DirectionsData extends AsyncTask<Object, String, String>{
         try {
             URL url = new URL(urlString);
             httpUrlConn = (HttpURLConnection) url.openConnection();
+            int responseCode = httpUrlConn.getResponseCode();
+            android.util.Log.v(TAG, "responseCode: " + responseCode);
             httpUrlConn.connect();
 
             is = httpUrlConn.getInputStream();
@@ -77,13 +80,13 @@ class DirectionsData extends AsyncTask<Object, String, String>{
             while((line = br.readLine()) != null) sb.append(line);
             data = sb.toString();
             br.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            android.util.Log.v(TAG, "Could not open URL");
         } finally {
             try {
                 is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                android.util.Log.v(TAG, "Could not close input stream");
             }
             httpUrlConn.disconnect();
         }
@@ -92,6 +95,7 @@ class DirectionsData extends AsyncTask<Object, String, String>{
     }
 
     private String[] parseData(String json) {
+        if(json.equals("")) return null;
         JSONArray jsonArray = null;
         JSONObject obj;
         try {
@@ -101,8 +105,8 @@ class DirectionsData extends AsyncTask<Object, String, String>{
             jsonArray = routes.getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0)
                     .getJSONArray("steps");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            android.util.Log.v(TAG, "Could not parse data");
         }
 
         return getPaths(jsonArray);
@@ -114,8 +118,8 @@ class DirectionsData extends AsyncTask<Object, String, String>{
         for (int i = 0; i < polylines.length; i++) {
             try {
                 polylines[i] = path.getJSONObject(i).getJSONObject("polyline").getString("points");
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                android.util.Log.v(TAG, "Could not parse paths");
             }
         }
 

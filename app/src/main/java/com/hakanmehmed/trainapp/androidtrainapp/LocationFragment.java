@@ -230,7 +230,9 @@ public class LocationFragment extends Fragment implements OnMapReadyCallback {
         if(markers.size() != 0){
             Log.v(TAG, message);
             LatLngBounds.Builder b = new LatLngBounds.Builder();
-            b.include(this.myPosition);
+            if(this.myPosition != null) {
+                b.include(this.myPosition);
+            }
             getLocation();
             for (Marker marker : markers) {
                 b.include(marker.getPosition());

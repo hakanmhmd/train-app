@@ -60,9 +60,9 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             itemView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (allJourneys.size() > 1) {
-                        int position = getAdapterPosition();
-                        if (position == 0) {
+                    int position = getAdapterPosition();
+                    if(position == 0){
+                        if(allJourneys.size() > 1) {
                             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
                             String firstTrainTime = allJourneys.get(0)
                                     .getLegs().get(0).getOrigin().getScheduledTime();
@@ -80,7 +80,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                             ((SearchJourneyFragment) fragment).performNewSearch(format.format(c.getTime()));
                         }
                     } else {
-                        if (allJourneys.size() > 1) {
+                        if(allJourneys.size() > 1) {
                             String lastTrainTime = allJourneys.get(allJourneys.size() - 1)
                                     .getLegs().get(0).getOrigin().getScheduledTime();
                             Log.v(TAG, "it is " + lastTrainTime);
@@ -91,15 +91,15 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             });
         }
 
-        void removeBottomLine() {
+        void removeBottomLine(){
             bottomLine.setVisibility(GONE);
         }
 
-        void setTextMessage(String text) {
+        void setTextMessage(String text){
             moreTrains.setText(text);
         }
 
-        void setArrowImage(int drawable) {
+        void setArrowImage(int drawable){
             arrowImage.setImageResource(drawable);
         }
     }
@@ -129,10 +129,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         @BindView(R.id.durationTv)
         TextView durationTv;
 
-        @OnClick(R.id.trackLiveBtn)
-        void buttonPressed() {
-            inflateMoreInfoActivity(getAdapterPosition());
-        }
+        @OnClick(R.id.trackLiveBtn) void buttonPressed(){ inflateMoreInfoActivity(getAdapterPosition()); }
 
         public SearchViewHolder(View v) {
             super(v);
@@ -142,45 +139,45 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 @Override
                 public void onClick(View view) {
                     int position = getAdapterPosition();
-                    ((SearchJourneyFragment) fragment).
-                            displayJourneyInfo(allJourneys.get(position - 1));
+                    ((SearchJourneyFragment)fragment).
+                            displayJourneyInfo(allJourneys.get(position-1));
                 }
             });
         }
 
-        void setDeparture(String station, String platform, String time) {
+        void setDeparture(String station, String platform, String time){
             departureTimeTv.setText(time);
             departureStationTv.setText(station);
 
-            if (platform == null || platform.isEmpty()) {
+            if(platform == null || platform.isEmpty()){
                 departurePlatformTv.setText(R.string.no_platform);
             } else {
                 departurePlatformTv.setText(context.getString(R.string.platform, platform));
             }
         }
 
-        void setArrival(String station, String platform, String time) {
+        void setArrival(String station, String platform, String time){
             arrivalTimeTv.setText(time);
             arrivalStationTv.setText(station);
 
-            if (platform == null || platform.isEmpty()) {
+            if(platform == null || platform.isEmpty()){
                 arrivalPlatformTv.setText(R.string.no_platform);
             } else {
                 arrivalPlatformTv.setText(context.getString(R.string.platform, platform));
             }
         }
 
-        void setNumberOfChanges(int changes) {
-            if (changes == 0) {
+        void setNumberOfChanges(int changes){
+            if(changes == 0) {
                 numberOfChangesTv.setText(R.string.no_changes);
-            } else if (changes == 1) {
+            } else if(changes == 1){
                 numberOfChangesTv.setText(R.string.one_change);
             } else {
                 numberOfChangesTv.setText(context.getString(R.string.more_changes, changes));
             }
         }
 
-        void setDuration(String departureTime, String arrivalTime) {
+        void setDuration(String departureTime, String arrivalTime){
             durationTv.setText(Utils.getTimeDifference(departureTime, arrivalTime, true));
         }
     }
@@ -196,7 +193,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 0) {
+        if(viewType == 0){
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.search_more_button, parent, false);
             return new ButtonViewHolder(view);
@@ -209,9 +206,9 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder h, int position) {
-        if (h.getItemViewType() == 0) {
+        if(h.getItemViewType() == 0) {
             ButtonViewHolder holder = (ButtonViewHolder) h;
-            if (position == 0) {
+            if(position == 0){
                 holder.setTextMessage("Search for earlier trains.");
                 holder.setArrowImage(R.drawable.ic_arrow_up_24dp);
             } else {
@@ -221,7 +218,7 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             }
         } else {
             SearchViewHolder holder = (SearchViewHolder) h;
-            Journey journey = allJourneys.get(position - 1);
+            Journey journey = allJourneys.get(position-1);
 
             if (journey == null) return;
             Log.v(TAG, journey.toString());
@@ -247,8 +244,8 @@ class SearchJourneyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (position == 0 || position == allJourneys.size() + 1) {
+    public int getItemViewType(int position){
+        if(position == 0 || position == allJourneys.size()+1){
             return 0;
         }
         return 1;
